@@ -18,7 +18,7 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(1920, 1080);
 
     player = createSprite(0, 0, 100, 100);
     player.setDefaultCollider();

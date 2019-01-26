@@ -35,6 +35,8 @@ const FRICTION = 1;
 
 const FLASHLIGHT_RADIUS = 400;
 
+let flashlightDestination;
+
 function preload() {
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
@@ -51,8 +53,8 @@ function setup() {
 
     tiles= createSprite(width/2,550,dishesImage.width, dishesImage.height);
     tilesImage.resize(width, 0);
-    tiles.addImage(tilesImage); 
-   
+    tiles.addImage(tilesImage);
+
     counterTop = createSprite(width / 2, height-(tableImage.height/2)+20, width, counterImage.height);
     counterImage.resize(width, 0);
     counterTop.addImage(counterImage);
@@ -61,7 +63,7 @@ function setup() {
     cabinets = createSprite(width/2, cabinetsImage.height/4, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
-    
+
     dishes= createSprite(dishesImage.width/2,height-(tableImage.height/2)-(counterImage.height/2),dishesImage.width, dishesImage.height);
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
@@ -85,8 +87,8 @@ function setup() {
     flashlightImage.resize(FLASHLIGHT_RADIUS * 2, FLASHLIGHT_RADIUS * 2);
     flashlight.addImage(flashlightImage);
     flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 2);
-    //flashlight.depth=allSprites.length;
-
+    flashlight.friction = 0.09;
+    flashlight.maxSpeed = MAX_SPEED * 1.5;
 
     for (const sprite of allSprites) {
         sprite.debug = true;
@@ -99,7 +101,6 @@ function setup() {
     kitchenClutter = new Group();
     kitchenClutter.add(microwave);
 
-
 }
 
 function draw() {
@@ -110,13 +111,15 @@ function draw() {
 
     applyMovement();
 
+    flashlightMovement();
+
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
             blendMode(SCREEN);
         } else {
             blendMode(BLEND);
         }
-        sprite.display()
+        sprite.display();
     }
 }
 
@@ -131,9 +134,6 @@ function detection() {
 }
 
 function applyMovement() {
-
-    flashlight.position.x = mouseX;
-    flashlight.position.y = mouseY;
 
     player.velocity.y += GRAVITY;
 
@@ -159,6 +159,23 @@ function applyMovement() {
         player.position.x < width
     ) {
         player.velocity.x = MAX_SPEED;
+    }
+
+}
+
+function flashlightMovement() {
+
+    if (!flashlightDestination) {
+        flashlightDestination = p5.Vector.random2D();
+        flashlightDestination.x = map(flashlightDestination.x, -1, 1, 0, width);
+        flashlightDestination.y = map(flashlightDestination.y, -1, 1, 0, height);
+    }
+
+    flashlight.velocity.x = (flashlightDestination.x - flashlight.position.x) * 0.2;
+    flashlight.velocity.y = (flashlightDestination.y - flashlight.position.y) * 0.2;
+
+    if (flashlight.position.dist(flashlightDestination) < 10) {
+        flashlightDestination = null;
     }
 
 }

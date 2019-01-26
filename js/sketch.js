@@ -22,6 +22,8 @@ let tiles;
 let table;
 let tableImage;
 
+let vignetteImage;
+
 let flashlight;
 let flashlightImage;
 
@@ -46,6 +48,7 @@ function preload() {
     playerImage = loadImage('../img/bottle.png');
     microwaveImage = loadImage('../img/microwave.png')
     cabinetsImage = loadImage('../img/cabinets_top.png');
+    vignetteImage = loadImage('../img/vignetteImage.png');
 }
 
 function setup() {
@@ -104,8 +107,7 @@ function setup() {
 }
 
 function draw() {
-    // clear();
-    background(0);
+    clear();
 
     detection();
 
@@ -121,6 +123,9 @@ function draw() {
         }
         sprite.display();
     }
+
+    blendMode(BLEND);
+    image(vignetteImage, 0, 0, width, height);
 }
 
 function detection() {

@@ -69,7 +69,9 @@ let ladle3Image;
 
 var detected;
 var lost;
+var win;
 var overlapFire = 0;
+var time = 0;
 
 let fire;
 let fireImages;
@@ -312,12 +314,15 @@ function draw() {
 		}
 		flashlight.visible = true;
     } 
+	if (currentLevel == 6){
+		win=true;
+	}
 	
 	applyMovement();
 	
 	fireDetection();
 	
-	if (!lost){
+	if (!lost && !win){
     
 	clear();
 

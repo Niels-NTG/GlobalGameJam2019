@@ -316,28 +316,15 @@ function draw() {
 			lost = true;
 		}
 		flashlight.visible = true;
-<<<<<<< HEAD
     } 
 	if (currentLevel == 6){
 		win=true;
 	}
-	
-=======
-    }
-
->>>>>>> 2e9a60428da6dbb6c8a5cf403f35a1d94d5a879d
 	applyMovement();
 
 	fireDetection();
-<<<<<<< HEAD
 	
 	if (!lost && !win){
-    
-	clear();
-=======
-
-	if (!lost){
->>>>>>> 2e9a60428da6dbb6c8a5cf403f35a1d94d5a879d
 
         hide();
 

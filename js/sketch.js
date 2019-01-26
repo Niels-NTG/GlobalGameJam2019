@@ -16,6 +16,9 @@ let cabinetsImage;
 let sink;
 let sinkImage;
 
+let cleanSink;
+let cleanSinkImage;
+
 let dishes;
 let dishesImage;
 
@@ -48,8 +51,27 @@ let stovePanImage;
 let stovePanDirty;
 let stovePanImageDirty;
 
+let stains;
+let stainsImage;
+
+let rack;
+let rackImage;
+
+let ladle1;
+let ladle1Image;
+
+
+let ladle2;
+let ladle2Image;
+
+let ladle3;
+let ladle3Image;
+
 var detected;
 var lost;
+
+let fire;
+let fireImages;
 
 const counterHeight = 40;
 
@@ -82,6 +104,12 @@ function preload() {
     sinkImage = loadImage('../img/sink.png');
     stovePanImage = loadImage('../img/pan_on_stove.png');
 	stovePanDirtyImage = loadImage('../img/pan.png');
+	stainsImage = loadImage('../img/dirtlayer_counter.png');
+	cleanSinkImage = loadImage('../img/somewhat_clean_sink.png');
+	rackImage = loadImage('../img/cutlery_rack_base.png');
+	ladle1Image = loadImage('../img/hanging_ladle01.png');
+	ladle2Image = loadImage('../img/hanging_ladle02.png');
+	ladle3Image = loadImage('../img/hanging_ladle03.png');
 
     playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 8);
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
@@ -103,6 +131,12 @@ function preload() {
     playerStandingSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
 	
+	playerJumpSheet = loadSpriteSheet('../img/bottle_jump.png', 73, 150, 4);
+    playerJump = loadAnimation(playerJumpSheet);
+	
+	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/2, 223, 2);
+    fireMove = loadAnimation(fireImages);
+	
 	bottleFullness = loadAnimation();
 	bottleFullness.playing = false;
 }
@@ -122,8 +156,14 @@ function setup() {
     cabinets = createSprite(width/2, 70, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
-
-	shelf1 = createSprite(700, 480, shelfImage.width, shelfImage.height);
+	
+	stains = createSprite(width/2, height-240, width, stainsImage.height);
+    stainsImage.resize(width, 0);
+    stains.addImage(stainsImage);
+	stains.colliderOptions = stains.setCollider('rectangle', 0, 0, 0, 0);
+    stains.levels = [1, 2, 3, 4, 5];
+	
+	shelf1 = createSprite(680, 480, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf1.addImage(shelfImage);
 	shelf1.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60)
@@ -131,10 +171,24 @@ function setup() {
 	shelf2 = createSprite(1350, 650, shelfImage.width, shelfImage.height);
     shelf2.addImage(shelfImage);
 	shelf2.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
-
-	//shelf3 = createSprite(280, cabinetsImage.height+shelfImage.height-20, shelfImage.width, shelfImage.height);
-  //  shelf3.addImage(shelfImage);
-	//shelf3.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
+	
+	rack = createSprite(1750, 430, rackImage.width, rackImage.height);
+	rackImage.resize(rackImage.width/2, 0);
+	rack.addImage(rackImage);
+	rack.setCollider('rectangle', 0, 0, rackImage.width,rackImage.height);
+	
+	ladle1 = createSprite(1750, 500, ladle1Image.width, ladle1Image.height);
+	ladle1Image.resize(ladle1Image.width/2, 0);
+	ladle1.addImage(ladle1Image);
+	//ladle1.setCollider('rectangle', 0, ladle1Image.height-100, ladle1Image.width,ladle1Image.height/4);
+	
+	ladle2 = createSprite(1820, 520, ladle2Image.width, ladle2Image.height);
+	ladle2Image.resize(ladle2Image.width/2, 0);
+	ladle2.addImage(ladle2Image);
+	
+	ladle3 = createSprite(1680, 480, ladle3Image.width, ladle3Image.height);
+	ladle3Image.resize(ladle3Image.width/2, 0);
+	ladle3.addImage(ladle3Image);
 
     dishes= createSprite(750,height-120-195,dishesImage.width, dishesImage.height);
     dishesImage.resize(dishesImage.width/2,0);
@@ -145,7 +199,16 @@ function setup() {
 	sink= createSprite(width-700,height-120-160,sinkImage.width, sinkImage.height);
     sinkImage.resize(sinkImage.width/2,0);
     sink.addImage(sinkImage);
-    sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
+   //sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
+	sink.colliderOptions = sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
+    sink.levels = [1, 2, 3, 4];
+	
+	cleanSink= createSprite(width-700,height-120-160,cleanSinkImage.width, cleanSinkImage.height);
+    cleanSinkImage.resize(cleanSinkImage.width/2,0);
+    cleanSink.addImage(cleanSinkImage);
+   //cleanSink.setCollider('circle', 0, cleanSinkImage.height/2, cleanSinkImage.height);
+	cleanSink.colliderOptions = cleanSink.setCollider('circle', 0, cleanSinkImage.height/2, cleanSinkImage.height);
+    cleanSink.levels = [5,6];
 
 	microwave = createSprite(300, height-120-195, microwaveImage.width, microwaveImage.height);
     microwaveImage.resize(microwaveImage.width/2, 0);
@@ -155,17 +218,23 @@ function setup() {
     stove = createSprite(width-250, height-120, stoveImage.width, stoveImage.height);
     stoveImage.resize(stoveImage.width/2, 0);
     stove.addImage(stoveImage);
-    //stove.setCollider('rectangle', 25, 0, stoveImage.width-45, stoveImage.height);
+	
+	fire = createSprite(width-300, height-150, 306/2, 226);
+    fire.addAnimation('fire',fireMove);
+    fire.setCollider('rectangle', 0, 0, 306/2, 50);
 
 	stovePan = createSprite(width-190, height-250, stovePanImage.width, stovePanImage.height);
     stovePanImage.resize(stovePanImage.width/2, 0);
     stovePan.addImage(stovePanImage);
     stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
+	stovePan.colliderOptions = stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
+	stovePan.levels = [4,5,6];
 	
-	stovePanDirty = createSprite(width-190, height-250, stovePanDirtyImage.width, stovePanDirtyImage.height);
+	stovePanDirty = createSprite(1710, 800, stovePanDirtyImage.width, stovePanDirtyImage.height);
     stovePanDirtyImage.resize(stovePanDirtyImage.width/2, 0);
     stovePanDirty.addImage(stovePanDirtyImage);
-    stovePanDirty.setCollider('rectangle', 0, 0, stovePanDirtyImage.width-20, stovePanDirtyImage.height-40);
+	stovePanDirty.colliderOptions = stovePanDirty.setCollider('rectangle', 20, 0, stovePanDirtyImage.width-100, stovePanDirtyImage.height-45);
+    stovePanDirty.levels = [1, 2, 3];
 
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
@@ -185,6 +254,7 @@ function setup() {
     player.addAnimation('standing1', playerStandingAnimationWine3);
 	player.addAnimation('moving0', playerMovementAnimationWine4);
     player.addAnimation('standing0', playerStandingAnimationWine4);
+	player.addAnimation('jump', playerJump);
     player.setDefaultCollider();
 	player.depth = 200;
 
@@ -206,10 +276,15 @@ function setup() {
 	kitchenObjects.add(shelf1);
 	kitchenObjects.add(shelf2);
 	kitchenObjects.add(stovePan);
+	kitchenObjects.add(rack);
+	//kitchenObjects.add(ladle1);
+	//kitchenObjects.add(ladle2);
+	//kitchenObjects.add(ladle3);
 
     kitchenClutter = new Group();
 	kitchenClutter.add(dishes);
 	kitchenClutter.add(sink);
+	kitchenClutter.add(stovePanDirty);
 
 	for (const sprite of kitchenClutter){
 		sprite.depth += 100;
@@ -280,7 +355,7 @@ function hide(){
 
     if (keyWentDown('h') && player.overlap(kitchenClutter)){
 		if(player.depth > 100){
-			player.depth = 4;
+			player.depth = 20;
 			drawSprites();
 		}
 		else{
@@ -304,12 +379,6 @@ function applyMovement() {
     if (player.collide(kitchenObjects)) {
         player.velocity.y = 0;
     }
-
-
-
-    if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
-        player.velocity.y = -JUMP;
-    }
     if (
         (
             keyDown('a') || keyDown(LEFT_ARROW)
@@ -329,10 +398,17 @@ function applyMovement() {
     } else {
         player.changeAnimation('standing'+currentFullness.toString());
    }
+   if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
+        player.velocity.y = -JUMP;
+		/*player.changeAnimation('jump');
+		playerJump.goToFrame(1);
+    } else if (keyWentUp('space')) {
+		player.changeAnimation('jump');
+		playerJump.goToFrame(2);*/
+	}
 }
 
 function flashlightMovement() {
-
     if (!flashlightDestination) {
         flashlightDestination = p5.Vector.random2D();
         flashlightDestination.x = map(flashlightDestination.x, -1, 1, 0, width);

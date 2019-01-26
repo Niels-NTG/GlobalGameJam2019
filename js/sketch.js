@@ -13,14 +13,25 @@ let kitchenClutter;
 let cabinets;
 let cabinetsImage;
 
+let sink;
+let sinkImage;
+
 let dishes;
 let dishesImage;
+
+let shelf;
+let shelfImage;
+
+let vignetteImage;
 
 let tilesImage;
 let tiles;
 
 let table;
 let tableImage;
+
+let tableFG;
+let tableFGImage;
 
 let flashlight;
 let flashlightImage;
@@ -45,13 +56,14 @@ function preload() {
     dishesImage = loadImage('../img/dishes.png');
     tilesImage = loadImage('../img/tiles.png');
     tableImage = loadImage('../img/table.png');
+	tableFGImage = loadImage('../img/table2.png');
     counterImage = loadImage('../img/counter.png');
     playerImage = loadImage('../img/bottle.png');
     microwaveImage = loadImage('../img/microwave.png')
     cabinetsImage = loadImage('../img/cabinets_top.png');
-
-    sprite_sheet = loadSpriteSheet('../img/bottle_walk.png', 1156/8 , 330, 8);
-    playerMovement = loadAnimation(sprite_sheet);
+	vignetteImage = loadImage('../img/vignette.png');
+	shelfImage = loadImage('../img/shelf.png');
+	sinkImage = loadImage('../img/sink.png');
 }
 
 function setup() {
@@ -69,11 +81,21 @@ function setup() {
     cabinets = createSprite(width/2, cabinetsImage.height/4, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
+	
+	shelf = createSprite(1200, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
+    shelfImage.resize(shelfImage.width/2, 0);
+    shelf.addImage(shelfImage);
+	shelf.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
 
-    dishes= createSprite(dishesImage.width/2,height-(tableImage.height/2)-(counterImage.height/2),dishesImage.width, dishesImage.height);
+    dishes= createSprite(200,height-(tableImage.height/2)-(counterImage.height/2),dishesImage.width, dishesImage.height);
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
     dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
+	
+	sink= createSprite(600,height-(tableImage.height/2)-(counterImage.height/2)+25,sinkImage.width, sinkImage.height);
+    sinkImage.resize(sinkImage.width/2,0);
+    sink.addImage(sinkImage);
+    sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
 
     microwave = createSprite(width-250, height-(tableImage.height/2)-(counterImage.height/2), microwaveImage.width, microwaveImage.height);
     microwaveImage.resize(microwaveImage.width/2, 0)
@@ -83,8 +105,13 @@ function setup() {
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
     table.addImage(tableImage);
+	
+	tableFG= createSprite(width/2, height, tableFGImage.width, tableFGImage.height);
+    tableFGImage.resize(width, 0);
+    tableFG.addImage(tableFGImage);
+	tableFG.depth = 499;
 
-    player = createSprite(0, 0, playerImage.width, playerImage.height);
+    player = createSprite(33, 780, playerImage.width, playerImage.height);
     playerImage.resize(playerImage.width/2, 0); //playerImage.width/2
 //    player.addAnimation('standing',playerImage);
 //    player.addAnimation('movement', playerMovement);
@@ -107,10 +134,13 @@ function setup() {
     kitchenObjects = new Group();
     kitchenObjects.add(counterTop);
     kitchenObjects.add(microwave);
+	kitchenObjects.add(shelf);
+	
 
     kitchenClutter = new Group();
 //    kitchenClutter.add(microwave);
 	kitchenClutter.add(dishes);
+	kitchenClutter.add(sink);
 	
 	for (const sprite of kitchenClutter){
 		sprite.depth += 100;
@@ -118,8 +148,7 @@ function setup() {
 }
 
 function draw() {
-    // clear();
-    background(0);
+    clear();
 
     detection();
 	
@@ -138,12 +167,13 @@ function draw() {
         }
         sprite.display();
     }
-    
+	blendMode(BLEND);
+    image(vignetteImage, 0, 0, width, height);
 }
 
 function detection() {
 
-    if (player.overlap(flashlight) && player.depth>100) {
+    if (player.overlap(flashlight)) {
         player.shapeColor = color(255, 0, 0);
     } else {
         player.shapeColor = color(0, 255, 0);
@@ -204,8 +234,6 @@ function applyMovement() {
     } //else{
 //        player.changeAnimation('standing');
 //    }
-
-
 }
 
 function flashlightMovement() {

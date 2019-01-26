@@ -342,9 +342,10 @@ function draw() {
 
 	if (!lost && !win){
 
-		if (time % 4000 == 0){
-		currentLevel++;
-		time++;
+		if (time % 3540 == 0){
+			time=1;
+			currentLevel++;
+			time++;
 		}
 
         hide();
@@ -380,7 +381,7 @@ function draw() {
 	fill(0, 255,0);
 	textFont(clockFont);
 	textSize(50);
-	text('00:'(Math.floor(time/60)).toString(),500, 150);
+	text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 160);
 	
 }
 

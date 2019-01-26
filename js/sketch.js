@@ -102,7 +102,7 @@ function setup() {
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
 
-	shelf1 = createSprite(700, 500, shelfImage.width, shelfImage.height);
+	shelf1 = createSprite(700, 480, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf1.addImage(shelfImage);
 	shelf1.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60)
@@ -136,7 +136,7 @@ function setup() {
     stove.addImage(stoveImage);
     //stove.setCollider('rectangle', 25, 0, stoveImage.width-45, stoveImage.height);
 
-	stovePan = createSprite(width-200, height-250, stovePanImage.width, stovePanImage.height);
+	stovePan = createSprite(width-190, height-250, stovePanImage.width, stovePanImage.height);
     stovePanImage.resize(stovePanImage.width/2, 0);
     stovePan.addImage(stovePanImage);
     stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
@@ -195,13 +195,15 @@ function draw() {
 
 	flashlightMovement();
 
-	/*if(detected){
-		flashlight.position.x = 0;
+	if(detected){
+		flashlight.position.x = random(0, width);
 		flashlight.position.y = 0;
-		sleep(1000);
-		flashlight.depth=500;
+		flashlightDestination = null;
+		flashlight.visible = false;
 		detected=false;
-    } */
+		//
+		flashlight.visible = true;
+    } 
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {

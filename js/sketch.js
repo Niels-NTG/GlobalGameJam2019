@@ -85,7 +85,7 @@ function preload() {
 
     playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 8);
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
-    playerStandingSpritesWine = loadSpriteSheet('../img/bottle_standing_wine.png', 82, 160, 1);
+    playerStandingSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 1);
     playerStandingAnimationWine = loadAnimation(playerStandingSpritesWine);
 	
 	playerMovementSpritesWine2 = loadSpriteSheet('../img/bottle_walk_wine2.png', 86, 160, 8);

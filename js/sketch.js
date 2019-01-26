@@ -48,6 +48,8 @@ const FRICTION = 1;
 const FLASHLIGHT_RADIUS = 400;
 
 let flashlightDestination;
+let flashlightLingerTimer
+let flashlightMaxLingerTime;
 
 function preload() {
     flashlightImage = loadImage('../img/flashlight.png');
@@ -235,12 +237,19 @@ function flashlightMovement() {
         flashlightDestination = p5.Vector.random2D();
         flashlightDestination.x = map(flashlightDestination.x, -1, 1, 0, width);
         flashlightDestination.y = map(flashlightDestination.y, -1, 1, 0, height);
+        flashlightLingerTimer = 0;
+        flashlightMaxLingerTime = random(0, 3) * frameRate();
     }
 
     flashlight.velocity.x = (flashlightDestination.x - flashlight.position.x) * 0.2;
     flashlight.velocity.y = (flashlightDestination.y - flashlight.position.y) * 0.2;
 
-    if (flashlight.position.dist(flashlightDestination) < 10) {
+    flashlightLingerTimer++;
+
+    if (
+        flashlightLingerTimer > flashlightMaxLingerTime &&
+        flashlight.position.dist(flashlightDestination) < 10
+    ) {
         flashlightDestination = null;
     }
 

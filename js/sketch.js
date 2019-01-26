@@ -5,6 +5,9 @@ let microwave;
 let kitchenObjects;
 let kitchenClutter;
 
+let flashlight;
+let flashlightImage;
+
 const counterHeight = 40;
 
 const GRAVITY = 1;
@@ -13,8 +16,10 @@ const ACCELERATION = 10;
 const MAX_SPEED = 10;
 const FRICTION = 1;
 
-function preload() {
+const FLASHLIGHT_RADIUS = 400;
 
+function preload() {
+    flashlightImage = loadImage('../img/flashlight.png');
 }
 
 function setup() {
@@ -36,17 +41,42 @@ function setup() {
     kitchenClutter = new Group();
     kitchenClutter.add(microwave);
 
+
+    flashlight = createSprite(0, 0);
+    flashlightImage.resize(FLASHLIGHT_RADIUS * 2, FLASHLIGHT_RADIUS * 2);
+    flashlight.addImage(flashlightImage);
+    flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 2);
+    flashlight.debug = true;
+
 }
 
 function draw() {
-    clear();
+    // clear();
+    background(0);
+
+    detection();
 
     applyMovement();
+
+    blendMode(SCREEN);
 
     drawSprites();
 }
 
+function detection() {
+
+    if (player.overlap(flashlight)) {
+        player.shapeColor = color(255, 0, 0);
+    } else {
+        player.shapeColor = color(0, 255, 0);
+    }
+
+}
+
 function applyMovement() {
+
+    flashlight.position.x = mouseX;
+    flashlight.position.y = mouseY;
 
     player.velocity.y += GRAVITY;
 

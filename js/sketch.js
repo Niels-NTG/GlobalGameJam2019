@@ -77,7 +77,7 @@ var detected;
 var lost;
 var win;
 var overlapFire = 0;
-var time = 0;
+var time = 1;
 
 let fire;
 let fireImages;
@@ -299,9 +299,6 @@ function setup() {
 	kitchenObjects.add(shelf2);
 	kitchenObjects.add(stovePan);
 	kitchenObjects.add(rack);
-	//kitchenObjects.add(ladle1);
-	//kitchenObjects.add(ladle2);
-	//kitchenObjects.add(ladle3);
 
     kitchenClutter = new Group();
 	kitchenClutter.add(dishes);

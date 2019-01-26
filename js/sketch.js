@@ -116,33 +116,33 @@ function preload() {
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
     playerStandingSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 1);
     playerStandingAnimationWine = loadAnimation(playerStandingSpritesWine);
-	
+
 	playerMovementSpritesWine2 = loadSpriteSheet('../img/bottle_walk_wine2.png', 86, 160, 8);
     playerMovementAnimationWine2 = loadAnimation(playerMovementSpritesWine2);
     playerStandingSpritesWine2 = loadSpriteSheet('../img/bottle_walk_wine2.png', 86, 160, 1);
     playerStandingAnimationWine2 = loadAnimation(playerStandingSpritesWine2);
-	
+
 	playerMovementSpritesWine3 = loadSpriteSheet('../img/bottle_walk_wine3.png', 90, 160, 8);
     playerMovementAnimationWine3 = loadAnimation(playerMovementSpritesWine3);
     playerStandingSpritesWine3 = loadSpriteSheet('../img/bottle_walk_wine3.png', 90, 160, 1);
     playerStandingAnimationWine3 = loadAnimation(playerStandingSpritesWine3);
-	
+
 	playerMovementSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
     playerMovementAnimationWine4 = loadAnimation(playerMovementSpritesWine4);
     playerStandingSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
-	
+
 	playerDeadAnimation = loadImage('../img/bottle_dead.png');
 	playerDeadAnimation = loadImage('../img/bottle_dead.png');
 	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
     //playerDeadAnimation = loadAnimation(playerDeadSheet);
-	
+
 	playerJumpSheet = loadSpriteSheet('../img/bottle_jump.png', 73, 150, 4);
     playerJump = loadAnimation(playerJumpSheet);
-	
+
 	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/4, 223/2, 2);
     fireMove = loadAnimation(fireImages);
-	
+
 	bottleFullness = loadAnimation();
 	bottleFullness.playing = false;
 }
@@ -162,13 +162,13 @@ function setup() {
     cabinets = createSprite(width/2, 70, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
-	
+
 	stains = createSprite(width/2, height-240, width, stainsImage.height);
     stainsImage.resize(width, 0);
     stains.addImage(stainsImage);
 	stains.colliderOptions = stains.setCollider('rectangle', 0, 0, 0, 0);
     stains.levels = [1, 2, 3, 4, 5];
-	
+
 	shelf1 = createSprite(680, 480, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf1.addImage(shelfImage);
@@ -177,21 +177,21 @@ function setup() {
 	shelf2 = createSprite(1350, 650, shelfImage.width, shelfImage.height);
     shelf2.addImage(shelfImage);
 	shelf2.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
-	
+
 	rack = createSprite(1750, 430, rackImage.width, rackImage.height);
 	rackImage.resize(rackImage.width/2, 0);
 	rack.addImage(rackImage);
 	rack.setCollider('rectangle', 0, 0, rackImage.width,rackImage.height);
-	
+
 	ladle1 = createSprite(1750, 500, ladle1Image.width, ladle1Image.height);
 	ladle1Image.resize(ladle1Image.width/2, 0);
 	ladle1.addImage(ladle1Image);
 	//ladle1.setCollider('rectangle', 0, ladle1Image.height-100, ladle1Image.width,ladle1Image.height/4);
-	
+
 	ladle2 = createSprite(1820, 520, ladle2Image.width, ladle2Image.height);
 	ladle2Image.resize(ladle2Image.width/2, 0);
 	ladle2.addImage(ladle2Image);
-	
+
 	ladle3 = createSprite(1680, 480, ladle3Image.width, ladle3Image.height);
 	ladle3Image.resize(ladle3Image.width/2, 0);
 	ladle3.addImage(ladle3Image);
@@ -208,7 +208,7 @@ function setup() {
    //sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
 	sink.colliderOptions = sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
     sink.levels = [1, 2, 3, 4];
-	
+
 	cleanSink= createSprite(width-700,height-120-160,cleanSinkImage.width, cleanSinkImage.height);
     cleanSinkImage.resize(cleanSinkImage.width/2,0);
     cleanSink.addImage(cleanSinkImage);
@@ -224,7 +224,7 @@ function setup() {
     stove = createSprite(width-250, height-120, stoveImage.width, stoveImage.height);
     stoveImage.resize(stoveImage.width/2, 0);
     stove.addImage(stoveImage);
-	
+
 	fire = createSprite(width-320, height-240, 306/4, 226/2);
     fire.addAnimation('fire',fireMove);
     fire.setCollider('rectangle', 0, 25, 306/4, 50);
@@ -235,7 +235,7 @@ function setup() {
     stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
 	stovePan.colliderOptions = stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
 	stovePan.levels = [4,5,6];
-	
+
 	stovePanDirty = createSprite(1710, 800, stovePanDirtyImage.width, stovePanDirtyImage.height);
     stovePanDirtyImage.resize(stovePanDirtyImage.width/2, 0);
     stovePanDirty.addImage(stovePanDirtyImage);
@@ -260,7 +260,7 @@ function setup() {
     player.addAnimation('standing1', playerStandingAnimationWine3);
 	player.addAnimation('moving0', playerMovementAnimationWine4);
     player.addAnimation('standing0', playerStandingAnimationWine4);
-	player.addAnimation('jump', playerJump); 
+	player.addAnimation('jump', playerJump);
 	player.addAnimation('broken', playerDeadAnimation);
     player.setDefaultCollider();
 	player.depth = 200;
@@ -299,6 +299,9 @@ function setup() {
 }
 
 function draw() {
+
+    clear();
+
 	if(detected){
 		currentFullness--;
 		flashlight.position.x = random(0, width);
@@ -311,26 +314,21 @@ function draw() {
 			lost = true;
 		}
 		flashlight.visible = true;
-    } 
-	
+    }
+
 	applyMovement();
-	
+
 	fireDetection();
-	
+
 	if (!lost){
-    
-	clear();
 
-	hide();
+        hide();
 
-	detection();
+        detection();
 
-	flashlightMovement();
-	
-	
+        flashlightMovement();
+
 	}
-
-	
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -359,7 +357,7 @@ function fireDetection(){
 		player.changeAnimation('broken');
 		player.setDefaultCollider();
 		lost=true;
-		
+
 	}
 }
 
@@ -395,40 +393,44 @@ function hide(){
 
 function applyMovement() {
 
+    // Apply GRAVITY
     player.velocity.y += GRAVITY;
 
+    // Cancel horizontal velocity.
     player.velocity.x = 0;
 
-    if (player.collide(kitchenObjects)) {
+    // Cancel vertical velocity when touching top or bottom of another collider.
+    if (player.collide(kitchenObjects) && (player.touching.top || player.touching.bottom)) {
         player.velocity.y = 0;
     }
+
+    if (keyWentDown('space')) {
+        player.velocity.y = -JUMP;
+    }
+
+    // Apply velocity.
     if (
-        (
-            keyDown('a') || keyDown(LEFT_ARROW)
-        ) &&
-        player.position.x > 0
+        player.position.x > 0 &&
+        (keyDown('a') || keyDown(LEFT_ARROW))
     ) {
         player.velocity.x = -MAX_SPEED;
-        player.changeAnimation('moving'+currentFullness.toString());
-
-    } else if ((
-        keyDown('d') || keyDown(RIGHT_ARROW)
-    ) &&
-        player.position.x < width
+    } else if (
+        player.position.x < width &&
+        (keyDown('d') || keyDown(RIGHT_ARROW))
     ) {
         player.velocity.x = MAX_SPEED;
-        player.changeAnimation('moving'+currentFullness.toString());
-    } else {
-        player.changeAnimation('standing'+currentFullness.toString());
-   }
-   if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
-        player.velocity.y = -JUMP;
-		/*player.changeAnimation('jump');
-		playerJump.goToFrame(1);
-    } else if (keyWentUp('space')) {
-		player.changeAnimation('jump');
-		playerJump.goToFrame(2);*/
-	}
+    }
+
+    // Apply animations depending on velocity values.
+    if (player.velocity.y < 0) {
+        player.changeAnimation('jump');
+        playerJump.nextFrame();
+    } else if (player.velocity.x === 0) {
+        player.changeAnimation('standing' + currentFullness.toString());
+    } else if (player.velocity.x !== 0) {
+        player.changeAnimation('moving' + currentFullness.toString());
+    }
+
 }
 
 function flashlightMovement() {
@@ -445,4 +447,3 @@ function flashlightMovement() {
         flashlightDestination = null;
     }
 }
-

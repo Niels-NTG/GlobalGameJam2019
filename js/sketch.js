@@ -1,5 +1,6 @@
 let player;
 let playerImage;
+let isPlayerGrounded = true;
 
 let counterImage;
 let counterTop;
@@ -317,24 +318,24 @@ function draw() {
 			lost = true;
 		}
 		flashlight.visible = true;
-    } 
-	
+    }
+
 	if (currentLevel == 6){
 		win=true;
 	}
 	applyMovement();
 
 	fireDetection();
-	
+
 	if (!lost && !win){
-		
+
 		if (time % 4000 == 0){
 		currentLevel++;
 		time++;
 		}
 
         hide();
-		
+
 		time++;
 
         detection();
@@ -415,10 +416,12 @@ function applyMovement() {
     // Cancel vertical velocity when touching top or bottom of another collider.
     if (player.collide(kitchenObjects) && (player.touching.top || player.touching.bottom)) {
         player.velocity.y = 0;
+        isPlayerGrounded = player.touching.bottom;
     }
 
-    if (keyWentDown('space')) {
+    if (keyWentDown('space') && isPlayerGrounded) {
         player.velocity.y = -JUMP;
+        isPlayerGrounded = false;
     }
 
     // Apply velocity.

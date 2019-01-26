@@ -25,6 +25,9 @@ let tableImage;
 let flashlight;
 let flashlightImage;
 
+let sprite_sheet;
+let playerMovement;
+
 const counterHeight = 40;
 
 const GRAVITY = 1;
@@ -46,6 +49,9 @@ function preload() {
     playerImage = loadImage('../img/bottle.png');
     microwaveImage = loadImage('../img/microwave.png')
     cabinetsImage = loadImage('../img/cabinets_top.png');
+
+    sprite_sheet = loadSpriteSheet('../img/bottle_walk.png', 1156/8 , 330, 8);
+    playerMovement = loadAnimation(sprite_sheet);
 }
 
 function setup() {
@@ -79,9 +85,12 @@ function setup() {
     table.addImage(tableImage);
 
     player = createSprite(0, 0, playerImage.width, playerImage.height);
-    playerImage.resize(playerImage.width/2, 0);
-    player.addImage(playerImage);
+    playerImage.resize(playerImage.width/2, 0); //playerImage.width/2
+//    player.addAnimation('standing',playerImage);
+//    player.addAnimation('movement', playerMovement);
+	player.addImage(playerImage);
     player.setDefaultCollider();
+	player.depth = 200;
 
     flashlight = createSprite(0, 0);
     flashlightImage.resize(FLASHLIGHT_RADIUS * 2, FLASHLIGHT_RADIUS * 2);
@@ -89,6 +98,7 @@ function setup() {
     flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 2);
     flashlight.friction = 0.09;
     flashlight.maxSpeed = MAX_SPEED * 1.5;
+	flashlight.depth = 500;
 
     for (const sprite of allSprites) {
         sprite.debug = true;
@@ -99,8 +109,12 @@ function setup() {
     kitchenObjects.add(microwave);
 
     kitchenClutter = new Group();
-    kitchenClutter.add(microwave);
-
+//    kitchenClutter.add(microwave);
+	kitchenClutter.add(dishes);
+	
+	for (const sprite of kitchenClutter){
+		sprite.depth += 100;
+	}
 }
 
 function draw() {
@@ -108,10 +122,13 @@ function draw() {
     background(0);
 
     detection();
+	
+	hide();
 
     applyMovement();
 
     flashlightMovement();
+    
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -121,16 +138,36 @@ function draw() {
         }
         sprite.display();
     }
+    
 }
 
 function detection() {
 
-    if (player.overlap(flashlight)) {
+    if (player.overlap(flashlight) && player.depth>100) {
         player.shapeColor = color(255, 0, 0);
     } else {
         player.shapeColor = color(0, 255, 0);
     }
 
+}
+
+function hide(){
+	
+	if (keyWentDown('h')  && player.overlap(kitchenClutter)){
+		if(player.depth>100){
+			player.depth = 4;
+			drawSprites();
+		}
+		else{
+			player.depth = 200;
+			drawSprites();
+		}
+	}
+	if (player.depth<100 && !player.overlap(kitchenClutter)){
+		player.depth = 200;
+		drawSprites();
+	}
+	
 }
 
 function applyMovement() {
@@ -142,7 +179,9 @@ function applyMovement() {
     if (player.collide(kitchenObjects)) {
         player.velocity.y = 0;
     }
-
+	
+	
+	
     if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
         player.velocity.y = -JUMP;
     }
@@ -153,13 +192,19 @@ function applyMovement() {
         player.position.x > 0
     ) {
         player.velocity.x = -MAX_SPEED;
+        player.changeAnimation('movement');
+
     } else if ((
         keyDown('d') || keyDown(RIGHT_ARROW)
     ) &&
         player.position.x < width
     ) {
         player.velocity.x = MAX_SPEED;
-    }
+//        player.changeAnimation('movement');
+    } //else{
+//        player.changeAnimation('standing');
+//    }
+
 
 }
 

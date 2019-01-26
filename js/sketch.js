@@ -45,7 +45,11 @@ let stoveImage;
 let stovePan;
 let stovePanImage;
 
+let stovePanDirty;
+let stovePanImageDirty;
+
 var detected;
+var lost;
 
 const counterHeight = 40;
 
@@ -59,7 +63,8 @@ const FLASHLIGHT_RADIUS = 400;
 
 let flashlightDestination;
 
-let currentLevel = 3;
+let currentLevel = 4;
+let currentFullness = 3;
 
 function preload() {
     flashlightImage = loadImage('../img/flashlight.png');
@@ -76,14 +81,30 @@ function preload() {
 	stoveImage = loadImage('../img/stove_base.png');
     sinkImage = loadImage('../img/sink.png');
     stovePanImage = loadImage('../img/pan_on_stove.png');
+	stovePanDirtyImage = loadImage('../img/pan.png');
 
-    playerMovementSpritesBeer = loadSpriteSheet('../img/bottle_walk_beer.png', 140, 330, 8);
-    playerMovementAnimationBeer = loadAnimation(playerMovementSpritesBeer);
     playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 8);
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
     playerStandingSpritesWine = loadSpriteSheet('../img/bottle_standing_wine.png', 82, 160, 1);
     playerStandingAnimationWine = loadAnimation(playerStandingSpritesWine);
-
+	
+	playerMovementSpritesWine2 = loadSpriteSheet('../img/bottle_walk_wine2.png', 86, 160, 8);
+    playerMovementAnimationWine2 = loadAnimation(playerMovementSpritesWine2);
+    playerStandingSpritesWine2 = loadSpriteSheet('../img/bottle_walk_wine2.png', 86, 160, 1);
+    playerStandingAnimationWine2 = loadAnimation(playerStandingSpritesWine2);
+	
+	playerMovementSpritesWine3 = loadSpriteSheet('../img/bottle_walk_wine3.png', 90, 160, 8);
+    playerMovementAnimationWine3 = loadAnimation(playerMovementSpritesWine3);
+    playerStandingSpritesWine3 = loadSpriteSheet('../img/bottle_walk_wine3.png', 90, 160, 1);
+    playerStandingAnimationWine3 = loadAnimation(playerStandingSpritesWine3);
+	
+	playerMovementSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
+    playerMovementAnimationWine4 = loadAnimation(playerMovementSpritesWine4);
+    playerStandingSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
+    playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
+	
+	bottleFullness = loadAnimation();
+	bottleFullness.playing = false;
 }
 
 function setup() {
@@ -140,6 +161,11 @@ function setup() {
     stovePanImage.resize(stovePanImage.width/2, 0);
     stovePan.addImage(stovePanImage);
     stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
+	
+	stovePanDirty = createSprite(width-190, height-250, stovePanDirtyImage.width, stovePanDirtyImage.height);
+    stovePanDirtyImage.resize(stovePanDirtyImage.width/2, 0);
+    stovePanDirty.addImage(stovePanDirtyImage);
+    stovePanDirty.setCollider('rectangle', 0, 0, stovePanDirtyImage.width-20, stovePanDirtyImage.height-40);
 
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
@@ -151,8 +177,14 @@ function setup() {
 	tableFG.depth = 499;
 
     player = createSprite(33, 780);
-    player.addAnimation('movement', playerMovementAnimationWine);
-    player.addAnimation('standing', playerStandingAnimationWine);
+    player.addAnimation('moving3', playerMovementAnimationWine);
+    player.addAnimation('standing3', playerStandingAnimationWine);
+	player.addAnimation('moving2', playerMovementAnimationWine2);
+    player.addAnimation('standing2', playerStandingAnimationWine2);
+	player.addAnimation('moving1', playerMovementAnimationWine3);
+    player.addAnimation('standing1', playerStandingAnimationWine3);
+	player.addAnimation('moving0', playerMovementAnimationWine4);
+    player.addAnimation('standing0', playerStandingAnimationWine4);
     player.setDefaultCollider();
 	player.depth = 200;
 
@@ -185,25 +217,34 @@ function setup() {
 }
 
 function draw() {
-    clear();
-
+	if(detected){
+		currentFullness--;
+		flashlight.position.x = random(0, width);
+		flashlight.position.y = 0;
+		flashlightDestination = null;
+		flashlight.visible = false;
+		detected=false;
+		currentLevel--;
+		if (currentLevel == 0 || currentFullness == 0){
+			lost = true;
+		}
+		flashlight.visible = true;
+    } 
+	
 	applyMovement();
+	
+	if (!lost){
+    
+	clear();
 
 	hide();
 
 	detection();
 
 	flashlightMovement();
+	}
 
-	if(detected){
-		flashlight.position.x = random(0, width);
-		flashlight.position.y = 0;
-		flashlightDestination = null;
-		flashlight.visible = false;
-		detected=false;
-		//
-		flashlight.visible = true;
-    } 
+	
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -276,7 +317,7 @@ function applyMovement() {
         player.position.x > 0
     ) {
         player.velocity.x = -MAX_SPEED;
-        player.changeAnimation('movement');
+        player.changeAnimation('moving'+currentFullness.toString());
 
     } else if ((
         keyDown('d') || keyDown(RIGHT_ARROW)
@@ -284,9 +325,9 @@ function applyMovement() {
         player.position.x < width
     ) {
         player.velocity.x = MAX_SPEED;
-        player.changeAnimation('movement');
+        player.changeAnimation('moving'+currentFullness.toString());
     } else {
-        player.changeAnimation('standing');
+        player.changeAnimation('standing'+currentFullness.toString());
    }
 }
 
@@ -306,7 +347,3 @@ function flashlightMovement() {
     }
 }
 
-function sleep(delay) {
-        var start = new Date().getTime();
-        while (new Date().getTime() < start + delay);
-      }

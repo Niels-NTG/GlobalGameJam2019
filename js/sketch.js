@@ -1,3 +1,6 @@
+let mainTextFont;
+let headingFont;
+
 let player;
 let playerImage;
 let isPlayerGrounded = true;
@@ -74,8 +77,6 @@ let ladle3;
 let ladle3Image;
 
 var detected;
-var lost;
-var win;
 var overlapFire = 0;
 var time = 0;
 
@@ -96,8 +97,13 @@ let flashlightDestination;
 
 let currentLevel = 4;
 let currentFullness = 3;
+let isFailState = false;
+let isVictoryState = false;
 
 function preload() {
+    mainTextFont = loadFont('../fonts/Spectral-Italic.ttf');
+    headingFont = loadFont('../fonts/Spectral-Bold.ttf');
+
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
     tilesImage = loadImage('../img/tiles.png');
@@ -178,11 +184,11 @@ function setup() {
     stains.addImage(stainsImage);
 	stains.colliderOptions = stains.setCollider('rectangle', 0, 0, 0, 0);
     stains.levels = [1, 2, 3, 4, 5];
-	
+
 	clock = createSprite(500, 150, clockImage.width, clockImage.height);
 	clockImage.resize(clockImage.width/2, 0);
 	clock.addImage(clockImage);
-		
+
 
 	shelf1 = createSprite(680, 480, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
@@ -299,9 +305,9 @@ function setup() {
 	kitchenObjects.add(shelf2);
 	kitchenObjects.add(stovePan);
 	kitchenObjects.add(rack);
-	//kitchenObjects.add(ladle1);
-	//kitchenObjects.add(ladle2);
-	//kitchenObjects.add(ladle3);
+	// kitchenObjects.add(ladle1);
+	// kitchenObjects.add(ladle2);
+	// kitchenObjects.add(ladle3);
 
     kitchenClutter = new Group();
 	kitchenClutter.add(dishes);
@@ -315,10 +321,15 @@ function setup() {
 
 function draw() {
 
-    clear();
-	
+    if (isFailState) {
+        showFailure();
+        return;
+    } else if (isVictoryState) {
+        showVictory();
+        return;
+    }
 
-	if(detected){
+	if (detected) {
 		time=1;
 		currentFullness--;
 		flashlight.position.x = random(0, width);
@@ -327,20 +338,16 @@ function draw() {
 		flashlight.visible = false;
 		detected=false;
 		currentLevel--;
-		if (currentLevel == 0 || currentFullness == 0){
-			lost = true;
+		if (currentLevel === 0 || currentFullness === 0){
+            isFailState = true;
 		}
 		flashlight.visible = true;
     }
 
-	if (currentLevel == 6){
-		win=true;
-	}
 	applyMovement();
 
 	fireDetection();
 
-	if (!lost && !win){
 
 		if (time % 3540 == 0){
 			time=1;
@@ -350,13 +357,12 @@ function draw() {
 
         hide();
 
-		time++;
 
-        detection();
+    time++;
 
-        flashlightMovement();
+    detection();
 
-	}
+    flashlightMovement();
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -373,27 +379,27 @@ function draw() {
             sprite.setCollider('circle', 0, 0, 0);
         }
     }
-	
-	
 	blendMode(BLEND);
     image(vignetteImage, 0, 0, width, height);
-	
+
 	fill(0, 255,0);
-	textFont(clockFont);
-	textSize(50);
-	text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 160);
-	
+    textFont(clockFont, 50);
+    textAlign(LEFT, BOTTOM)
+	text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 170);
+
+    if (currentLevel === 6) {
+        isVictoryState = true;
+    }
 }
 
 function fireDetection(){
 	if(player.overlap(fire)){
 		overlapFire++;
 	}
-	if (overlapFire>=100){
+	if (overlapFire >= 60) {
 		player.changeAnimation('broken');
 		player.setDefaultCollider();
-		lost=true;
-
+        isFailState = true;
 	}
 }
 
@@ -484,4 +490,52 @@ function flashlightMovement() {
     if (flashlight.position.dist(flashlightDestination) < 10) {
         flashlightDestination = null;
     }
+}
+
+function showVictory() {
+
+    background(255);
+
+    noStroke();
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textFont(headingFont, 160);
+    text('Victory?', width / 2, height / 2);
+
+    createRestartButton();
+
+    noLoop();
+}
+
+function showFailure() {
+
+    background(0);
+
+    noStroke();
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textFont(headingFont, 160);
+    text('Fail', width / 2, height / 2);
+
+    createRestartButton();
+
+    noLoop();
+}
+
+function createRestartButton() {
+    let btn = createButton('Restart');
+    btn.position(width / 2, (height / 2) + 160);
+    btn.mousePressed(restart);
+}
+
+// Restart game when hitting ENTER key.
+function keyReleased() {
+    if (keyCode === ENTER) {
+        restart();
+    }
+}
+
+// Restart game.
+function restart() {
+    location.reload();
 }

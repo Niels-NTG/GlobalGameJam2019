@@ -1530,6 +1530,9 @@ function Sprite(pInst, _x, _y, _w, _h) {
     }
 
     quadTree.insert(this);
+
+    // Return collider for later re-use.
+    return this.collider;
   };
 
   /**

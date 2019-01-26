@@ -59,6 +59,8 @@ const FLASHLIGHT_RADIUS = 400;
 
 let flashlightDestination;
 
+let currentLevel = 3;
+
 function preload() {
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
@@ -116,7 +118,8 @@ function setup() {
     dishes= createSprite(750,height-120-195,dishesImage.width, dishesImage.height);
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
-    dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
+    dishes.colliderOptions = dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
+    dishes.levels = [1, 2];
 
 	sink= createSprite(width-700,height-120-160,sinkImage.width, sinkImage.height);
     sinkImage.resize(sinkImage.width/2,0);
@@ -206,7 +209,14 @@ function draw() {
         } else {
             blendMode(BLEND);
         }
-        sprite.display();
+        if (!sprite.hasOwnProperty('levels') || sprite.levels.includes(currentLevel)) {
+            sprite.display();
+            if (sprite.colliderOptions) {
+                sprite.collider = sprite.colliderOptions;
+            }
+        } else {
+            sprite.setCollider('circle', 0, 0, 0);
+        }
     }
 	blendMode(BLEND);
     image(vignetteImage, 0, 0, width, height);
@@ -225,8 +235,8 @@ function detection() {
 
 function hide(){
 
-	if (keyWentDown('h')  && player.overlap(kitchenClutter)){
-		if(player.depth>100){
+    if (keyWentDown('h') && player.overlap(kitchenClutter)){
+		if(player.depth > 100){
 			player.depth = 4;
 			drawSprites();
 		}

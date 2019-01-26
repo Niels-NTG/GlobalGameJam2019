@@ -72,8 +72,16 @@ function preload() {
 	vignetteImage = loadImage('../img/vignette.png');
 	shelfImage = loadImage('../img/shelf.png');
 	stoveImage = loadImage('../img/stove_base.png');
-	sinkImage = loadImage('../img/sink.png');
-	stovePanImage = loadImage('../img/pan_on_stove.png');
+    sinkImage = loadImage('../img/sink.png');
+    stovePanImage = loadImage('../img/pan_on_stove.png');
+
+    playerMovementSpritesBeer = loadSpriteSheet('../img/bottle_walk_beer.png', 140, 330, 8);
+    playerMovementAnimationBeer = loadAnimation(playerMovementSpritesBeer);
+    playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 165, 330, 8);
+    playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
+    playerStandingSpritesWine = loadSpriteSheet('../img/bottle_standing_wine.png', 165, 330, 1);
+    playerStandingAnimationWine = loadAnimation(playerStandingSpritesWine);
+
 }
 
 function setup() {
@@ -91,16 +99,16 @@ function setup() {
     cabinets = createSprite(width/2, 70, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
-	
+
 	shelf1 = createSprite(700, 500, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf1.addImage(shelfImage);
 	shelf1.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60)
-	
+
 	shelf2 = createSprite(1350, 650, shelfImage.width, shelfImage.height);
     shelf2.addImage(shelfImage);
 	shelf2.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
-	
+
 	//shelf3 = createSprite(280, cabinetsImage.height+shelfImage.height-20, shelfImage.width, shelfImage.height);
   //  shelf3.addImage(shelfImage);
 	//shelf3.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
@@ -109,12 +117,12 @@ function setup() {
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
     dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
-	
+
 	sink= createSprite(width-700,height-120-160,sinkImage.width, sinkImage.height);
     sinkImage.resize(sinkImage.width/2,0);
     sink.addImage(sinkImage);
     sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
-	
+
 	microwave = createSprite(300, height-120-195, microwaveImage.width, microwaveImage.height);
     microwaveImage.resize(microwaveImage.width/2, 0);
     microwave.addImage(microwaveImage);
@@ -129,21 +137,19 @@ function setup() {
     stovePanImage.resize(stovePanImage.width/2, 0);
     stovePan.addImage(stovePanImage);
     stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
-	
+
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
     table.addImage(tableImage);
-	
+
 	tableFG= createSprite(width/2, height, tableFGImage.width, tableFGImage.height);
     tableFGImage.resize(width, 0);
     tableFG.addImage(tableFGImage);
 	tableFG.depth = 499;
 
-    player = createSprite(33, 780, playerImage.width, playerImage.height);
-    playerImage.resize(playerImage.width/2, 0);
-//    player.addAnimation('standing',playerImage);
-//    player.addAnimation('movement', playerMovement);
-	player.addImage(playerImage);
+    player = createSprite(33, 780);
+    player.addAnimation('movement', playerMovementAnimationWine);
+    player.addAnimation('standing', playerStandingAnimationWine);
     player.setDefaultCollider();
 	player.depth = 200;
 
@@ -169,7 +175,7 @@ function setup() {
     kitchenClutter = new Group();
 	kitchenClutter.add(dishes);
 	kitchenClutter.add(sink);
-	
+
 	for (const sprite of kitchenClutter){
 		sprite.depth += 100;
 	}
@@ -179,11 +185,11 @@ function draw() {
     clear();
 
 	applyMovement();
-	
+
 	hide();
-	
+
 	detection();
-	
+
 	flashlightMovement();
 
 	/*if(detected){
@@ -218,7 +224,7 @@ function detection() {
 }
 
 function hide(){
-	
+
 	if (keyWentDown('h')  && player.overlap(kitchenClutter)){
 		if(player.depth>100){
 			player.depth = 4;
@@ -233,7 +239,7 @@ function hide(){
 		player.depth = 200;
 		drawSprites();
 	}
-	
+
 }
 
 function applyMovement() {
@@ -245,9 +251,9 @@ function applyMovement() {
     if (player.collide(kitchenObjects)) {
         player.velocity.y = 0;
     }
-	
-	
-	
+
+
+
     if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
         player.velocity.y = -JUMP;
     }
@@ -266,10 +272,10 @@ function applyMovement() {
         player.position.x < width
     ) {
         player.velocity.x = MAX_SPEED;
-//        player.changeAnimation('movement');
-    } //else{
-//        player.changeAnimation('standing');
-//    }
+        player.changeAnimation('movement');
+    } else {
+        player.changeAnimation('standing');
+   }
 }
 
 function flashlightMovement() {

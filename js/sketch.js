@@ -48,7 +48,7 @@ function preload() {
     playerImage = loadImage('../img/bottle.png');
     microwaveImage = loadImage('../img/microwave.png')
     cabinetsImage = loadImage('../img/cabinets_top.png');
-    vignetteImage = loadImage('../img/vignetteImage.png');
+    vignetteImage = loadImage('../img/vignette.png');
 }
 
 function setup() {

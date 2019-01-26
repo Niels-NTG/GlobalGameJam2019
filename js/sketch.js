@@ -305,6 +305,7 @@ function draw() {
     clear();
 
 	if(detected){
+		time=1;
 		currentFullness--;
 		flashlight.position.x = random(0, width);
 		flashlight.position.y = 0;
@@ -317,6 +318,7 @@ function draw() {
 		}
 		flashlight.visible = true;
     } 
+	
 	if (currentLevel == 6){
 		win=true;
 	}
@@ -325,8 +327,15 @@ function draw() {
 	fireDetection();
 	
 	if (!lost && !win){
+		
+		if (time % 4000 == 0){
+		currentLevel++;
+		time++;
+		}
 
         hide();
+		
+		time++;
 
         detection();
 

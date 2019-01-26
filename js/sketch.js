@@ -1,5 +1,6 @@
 let player;
-let playerImage;
+let playerMovementSpritesBeer;
+let playerMovementAnimationBeer;
 
 let counterImage;
 let counterTop;
@@ -36,9 +37,6 @@ let tableFGImage;
 let flashlight;
 let flashlightImage;
 
-let sprite_sheet;
-let playerMovement;
-
 const counterHeight = 40;
 
 const GRAVITY = 1;
@@ -58,12 +56,14 @@ function preload() {
     tableImage = loadImage('../img/table.png');
 	tableFGImage = loadImage('../img/table2.png');
     counterImage = loadImage('../img/counter.png');
-    playerImage = loadImage('../img/bottle.png');
     microwaveImage = loadImage('../img/microwave.png')
     cabinetsImage = loadImage('../img/cabinets_top.png');
 	vignetteImage = loadImage('../img/vignette.png');
 	shelfImage = loadImage('../img/shelf.png');
 	sinkImage = loadImage('../img/sink.png');
+
+    playerMovementSpritesBeer = loadSpriteSheet('../img/bottle_walk_beer.png', 140, 330, 8);
+    playerMovementAnimationBeer = loadAnimation(playerMovementSpritesBeer);
 }
 
 function setup() {
@@ -81,7 +81,7 @@ function setup() {
     cabinets = createSprite(width/2, cabinetsImage.height/4, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
-	
+
 	shelf = createSprite(1200, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf.addImage(shelfImage);
@@ -91,7 +91,7 @@ function setup() {
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
     dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
-	
+
 	sink= createSprite(600,height-(tableImage.height/2)-(counterImage.height/2)+25,sinkImage.width, sinkImage.height);
     sinkImage.resize(sinkImage.width/2,0);
     sink.addImage(sinkImage);
@@ -105,17 +105,14 @@ function setup() {
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
     table.addImage(tableImage);
-	
+
 	tableFG= createSprite(width/2, height, tableFGImage.width, tableFGImage.height);
     tableFGImage.resize(width, 0);
     tableFG.addImage(tableFGImage);
 	tableFG.depth = 499;
 
-    player = createSprite(33, 780, playerImage.width, playerImage.height);
-    playerImage.resize(playerImage.width/2, 0); //playerImage.width/2
-//    player.addAnimation('standing',playerImage);
-//    player.addAnimation('movement', playerMovement);
-	player.addImage(playerImage);
+    player = createSprite(33, 780);
+    player.addAnimation('movement', playerMovementAnimationBeer);
     player.setDefaultCollider();
 	player.depth = 200;
 
@@ -124,7 +121,7 @@ function setup() {
     flashlight.addImage(flashlightImage);
     flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 2);
     flashlight.friction = 0.09;
-    flashlight.maxSpeed = MAX_SPEED * 1.5;
+    flashlight.maxSpeed = MAX_SPEED * 1.1;
 	flashlight.depth = 500;
 
     for (const sprite of allSprites) {
@@ -135,13 +132,12 @@ function setup() {
     kitchenObjects.add(counterTop);
     kitchenObjects.add(microwave);
 	kitchenObjects.add(shelf);
-	
 
     kitchenClutter = new Group();
 //    kitchenClutter.add(microwave);
 	kitchenClutter.add(dishes);
 	kitchenClutter.add(sink);
-	
+
 	for (const sprite of kitchenClutter){
 		sprite.depth += 100;
 	}
@@ -151,13 +147,12 @@ function draw() {
     clear();
 
     detection();
-	
+
 	hide();
 
     applyMovement();
 
     flashlightMovement();
-    
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -182,7 +177,7 @@ function detection() {
 }
 
 function hide(){
-	
+
 	if (keyWentDown('h')  && player.overlap(kitchenClutter)){
 		if(player.depth>100){
 			player.depth = 4;
@@ -197,7 +192,7 @@ function hide(){
 		player.depth = 200;
 		drawSprites();
 	}
-	
+
 }
 
 function applyMovement() {
@@ -209,9 +204,7 @@ function applyMovement() {
     if (player.collide(kitchenObjects)) {
         player.velocity.y = 0;
     }
-	
-	
-	
+
     if (keyWentDown('space') && player.position.y > 0 && player.overlap(kitchenObjects)) {
         player.velocity.y = -JUMP;
     }
@@ -230,10 +223,10 @@ function applyMovement() {
         player.position.x < width
     ) {
         player.velocity.x = MAX_SPEED;
-//        player.changeAnimation('movement');
-    } //else{
-//        player.changeAnimation('standing');
-//    }
+        player.changeAnimation('movement');
+    } else {
+    //    player.changeAnimation('standing');
+   }
 }
 
 function flashlightMovement() {

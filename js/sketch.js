@@ -14,6 +14,11 @@ let kitchenClutter;
 let cabinets;
 let cabinetsImage;
 
+let clock;
+let clockImage;
+let clockFont;
+let clockText;
+
 let sink;
 let sinkImage;
 
@@ -114,6 +119,8 @@ function preload() {
 	ladle1Image = loadImage('../img/hanging_ladle01.png');
 	ladle2Image = loadImage('../img/hanging_ladle02.png');
 	ladle3Image = loadImage('../img/hanging_ladle03.png');
+	clockImage = loadImage('../img/alarmclock.png');
+	clockFont = loadFont ('../fonts/alarm_clock.ttf');
 
     playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 8);
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
@@ -171,6 +178,11 @@ function setup() {
     stains.addImage(stainsImage);
 	stains.colliderOptions = stains.setCollider('rectangle', 0, 0, 0, 0);
     stains.levels = [1, 2, 3, 4, 5];
+	
+	clock = createSprite(500, 150, clockImage.width, clockImage.height);
+	clockImage.resize(clockImage.width/2, 0);
+	clock.addImage(clockImage);
+		
 
 	shelf1 = createSprite(680, 480, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
@@ -304,6 +316,7 @@ function setup() {
 function draw() {
 
     clear();
+	
 
 	if(detected){
 		time=1;
@@ -359,8 +372,16 @@ function draw() {
             sprite.setCollider('circle', 0, 0, 0);
         }
     }
+	
+	
 	blendMode(BLEND);
     image(vignetteImage, 0, 0, width, height);
+	
+	fill(0, 255,0);
+	textFont(clockFont);
+	textSize(50);
+	text('00:'(Math.floor(time/60)).toString(),500, 150);
+	
 }
 
 function fireDetection(){

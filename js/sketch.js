@@ -69,6 +69,7 @@ let ladle3Image;
 
 var detected;
 var lost;
+var overlapFire = 0;
 
 let fire;
 let fireImages;
@@ -131,10 +132,15 @@ function preload() {
     playerStandingSpritesWine4 = loadSpriteSheet('../img/bottle_walk_wine4.png', 60, 150, 1);
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
 	
+	playerDeadAnimation = loadImage('../img/bottle_dead.png');
+	playerDeadAnimation = loadImage('../img/bottle_dead.png');
+	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
+    //playerDeadAnimation = loadAnimation(playerDeadSheet);
+	
 	playerJumpSheet = loadSpriteSheet('../img/bottle_jump.png', 73, 150, 4);
     playerJump = loadAnimation(playerJumpSheet);
 	
-	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/2, 223, 2);
+	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/4, 223/2, 2);
     fireMove = loadAnimation(fireImages);
 	
 	bottleFullness = loadAnimation();
@@ -219,9 +225,9 @@ function setup() {
     stoveImage.resize(stoveImage.width/2, 0);
     stove.addImage(stoveImage);
 	
-	fire = createSprite(width-300, height-150, 306/2, 226);
+	fire = createSprite(width-320, height-240, 306/4, 226/2);
     fire.addAnimation('fire',fireMove);
-    fire.setCollider('rectangle', 0, 0, 306/2, 50);
+    fire.setCollider('rectangle', 0, 25, 306/4, 50);
 
 	stovePan = createSprite(width-190, height-250, stovePanImage.width, stovePanImage.height);
     stovePanImage.resize(stovePanImage.width/2, 0);
@@ -254,7 +260,8 @@ function setup() {
     player.addAnimation('standing1', playerStandingAnimationWine3);
 	player.addAnimation('moving0', playerMovementAnimationWine4);
     player.addAnimation('standing0', playerStandingAnimationWine4);
-	player.addAnimation('jump', playerJump);
+	player.addAnimation('jump', playerJump); 
+	player.addAnimation('broken', playerDeadAnimation);
     player.setDefaultCollider();
 	player.depth = 200;
 
@@ -308,6 +315,8 @@ function draw() {
 	
 	applyMovement();
 	
+	fireDetection();
+	
 	if (!lost){
     
 	clear();
@@ -317,6 +326,8 @@ function draw() {
 	detection();
 
 	flashlightMovement();
+	
+	
 	}
 
 	
@@ -338,6 +349,18 @@ function draw() {
     }
 	blendMode(BLEND);
     image(vignetteImage, 0, 0, width, height);
+}
+
+function fireDetection(){
+	if(player.overlap(fire)){
+		overlapFire++;
+	}
+	if (overlapFire>=100){
+		player.changeAnimation('broken');
+		player.setDefaultCollider();
+		lost=true;
+		
+	}
 }
 
 function detection() {

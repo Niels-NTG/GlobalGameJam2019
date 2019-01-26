@@ -50,7 +50,7 @@ var detected;
 const counterHeight = 40;
 
 const GRAVITY = 1;
-const JUMP = 20;
+const JUMP = 25;
 const ACCELERATION = 10;
 const MAX_SPEED = 10;
 const FRICTION = 1;

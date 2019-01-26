@@ -19,7 +19,7 @@ let sinkImage;
 let dishes;
 let dishesImage;
 
-let shelf;
+let shelf1;
 let shelfImage;
 
 let vignetteImage;
@@ -38,6 +38,14 @@ let flashlightImage;
 
 let sprite_sheet;
 let playerMovement;
+
+let stove;
+let stoveImage;
+
+let stovePan;
+let stovePanImage;
+
+var detected;
 
 const counterHeight = 40;
 
@@ -63,45 +71,65 @@ function preload() {
     cabinetsImage = loadImage('../img/cabinets_top.png');
 	vignetteImage = loadImage('../img/vignette.png');
 	shelfImage = loadImage('../img/shelf.png');
+	stoveImage = loadImage('../img/stove_base.png');
 	sinkImage = loadImage('../img/sink.png');
+	stovePanImage = loadImage('../img/pan_on_stove.png');
 }
 
 function setup() {
     createCanvas(1920, 1080);
 
-    tiles= createSprite(width/2,550,dishesImage.width, dishesImage.height);
-    tilesImage.resize(width, 0);
+    tiles= createSprite(width/2,520,dishesImage.width, dishesImage.height);
+    tilesImage.resize(width*1.2, 0);
     tiles.addImage(tilesImage);
 
-    counterTop = createSprite(width / 2, height-(tableImage.height/2)+20, width, counterImage.height);
+    counterTop = createSprite(width / 2, height-100, width, counterImage.height);
     counterImage.resize(width, 0);
     counterTop.addImage(counterImage);
     counterTop.setCollider('rectangle', 0, 0, tableImage.width, tableImage.height-150);
 
-    cabinets = createSprite(width/2, cabinetsImage.height/4, width, cabinetsImage.height);
+    cabinets = createSprite(width/2, 70, width, cabinetsImage.height);
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
 	
-	shelf = createSprite(1200, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
+	shelf1 = createSprite(700, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
-    shelf.addImage(shelfImage);
-	shelf.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
+    shelf1.addImage(shelfImage);
+	shelf1.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60)
+	
+	shelf2 = createSprite(1150, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
+    shelf2.addImage(shelfImage);
+	shelf2.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
+	
+	//shelf3 = createSprite(280, cabinetsImage.height+shelfImage.height-20, shelfImage.width, shelfImage.height);
+  //  shelf3.addImage(shelfImage);
+	//shelf3.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
 
-    dishes= createSprite(200,height-(tableImage.height/2)-(counterImage.height/2),dishesImage.width, dishesImage.height);
+    dishes= createSprite(750,height-120-195,dishesImage.width, dishesImage.height);
     dishesImage.resize(dishesImage.width/2,0);
     dishes.addImage(dishesImage);
     dishes.setCollider('rectangle', 0, 0, dishesImage.width, dishesImage.height);
 	
-	sink= createSprite(600,height-(tableImage.height/2)-(counterImage.height/2)+25,sinkImage.width, sinkImage.height);
+	sink= createSprite(width-700,height-120-160,sinkImage.width, sinkImage.height);
     sinkImage.resize(sinkImage.width/2,0);
     sink.addImage(sinkImage);
     sink.setCollider('circle', 0, sinkImage.height/2, sinkImage.height);
-
-    microwave = createSprite(width-250, height-(tableImage.height/2)-(counterImage.height/2), microwaveImage.width, microwaveImage.height);
-    microwaveImage.resize(microwaveImage.width/2, 0)
-    microwave.addImage(microwaveImage)
+	
+	microwave = createSprite(300, height-120-195, microwaveImage.width, microwaveImage.height);
+    microwaveImage.resize(microwaveImage.width/2, 0);
+    microwave.addImage(microwaveImage);
     microwave.setCollider('rectangle', 25, 0, microwaveImage.width-45, microwaveImage.height);
 
+    stove = createSprite(width-250, height-120, stoveImage.width, stoveImage.height);
+    stoveImage.resize(stoveImage.width/2, 0);
+    stove.addImage(stoveImage);
+    //stove.setCollider('rectangle', 25, 0, stoveImage.width-45, stoveImage.height);
+
+	stovePan = createSprite(width-200, height-250, stovePanImage.width, stovePanImage.height);
+    stovePanImage.resize(stovePanImage.width/2, 0);
+    stovePan.addImage(stovePanImage);
+    stovePan.setCollider('rectangle', 0, 0, stovePanImage.width-20, stovePanImage.height-40);
+	
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
     table.addImage(tableImage);
@@ -112,7 +140,7 @@ function setup() {
 	tableFG.depth = 499;
 
     player = createSprite(33, 780, playerImage.width, playerImage.height);
-    playerImage.resize(playerImage.width/2, 0); //playerImage.width/2
+    playerImage.resize(playerImage.width/2, 0);
 //    player.addAnimation('standing',playerImage);
 //    player.addAnimation('movement', playerMovement);
 	player.addImage(playerImage);
@@ -122,7 +150,7 @@ function setup() {
     flashlight = createSprite(0, 0);
     flashlightImage.resize(FLASHLIGHT_RADIUS * 2, FLASHLIGHT_RADIUS * 2);
     flashlight.addImage(flashlightImage);
-    flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 2);
+    flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 4);
     flashlight.friction = 0.09;
     flashlight.maxSpeed = MAX_SPEED * 1.5;
 	flashlight.depth = 500;
@@ -134,11 +162,11 @@ function setup() {
     kitchenObjects = new Group();
     kitchenObjects.add(counterTop);
     kitchenObjects.add(microwave);
-	kitchenObjects.add(shelf);
-	
+	kitchenObjects.add(shelf1);
+	kitchenObjects.add(shelf2);
+	kitchenObjects.add(stovePan);
 
     kitchenClutter = new Group();
-//    kitchenClutter.add(microwave);
 	kitchenClutter.add(dishes);
 	kitchenClutter.add(sink);
 	
@@ -150,14 +178,21 @@ function setup() {
 function draw() {
     clear();
 
-    detection();
+	applyMovement();
 	
 	hide();
+	
+	detection();
+	
+	flashlightMovement();
 
-    applyMovement();
-
-    flashlightMovement();
-    
+	/*if(detected){
+		flashlight.position.x = 0;
+		flashlight.position.y = 0;
+		sleep(1000);
+		flashlight.depth=500;
+		detected=false;
+    } */
 
     for (const sprite of allSprites) {
         if (sprite === flashlight) {
@@ -173,12 +208,13 @@ function draw() {
 
 function detection() {
 
-    if (player.overlap(flashlight)) {
+    if (player.overlap(flashlight) && player.depth > 100) {
+		detected = true;
         player.shapeColor = color(255, 0, 0);
     } else {
+		detected = false;
         player.shapeColor = color(0, 255, 0);
     }
-
 }
 
 function hide(){
@@ -250,5 +286,9 @@ function flashlightMovement() {
     if (flashlight.position.dist(flashlightDestination) < 10) {
         flashlightDestination = null;
     }
-
 }
+
+function sleep(delay) {
+        var start = new Date().getTime();
+        while (new Date().getTime() < start + delay);
+      }

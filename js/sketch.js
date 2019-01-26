@@ -50,7 +50,7 @@ var detected;
 const counterHeight = 40;
 
 const GRAVITY = 1;
-const JUMP = 25;
+const JUMP = 20;
 const ACCELERATION = 10;
 const MAX_SPEED = 10;
 const FRICTION = 1;
@@ -92,12 +92,12 @@ function setup() {
     cabinetsImage.resize(width, 0);
     cabinets.addImage(cabinetsImage);
 	
-	shelf1 = createSprite(700, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
+	shelf1 = createSprite(700, 500, shelfImage.width, shelfImage.height);
     shelfImage.resize(shelfImage.width/2, 0);
     shelf1.addImage(shelfImage);
 	shelf1.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60)
 	
-	shelf2 = createSprite(1150, cabinetsImage.height+shelfImage.height, shelfImage.width, shelfImage.height);
+	shelf2 = createSprite(1350, 650, shelfImage.width, shelfImage.height);
     shelf2.addImage(shelfImage);
 	shelf2.setCollider('rectangle',0,-20,shelfImage.width, shelfImage.height-60);
 	

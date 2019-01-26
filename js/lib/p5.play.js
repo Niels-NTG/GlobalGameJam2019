@@ -3568,8 +3568,8 @@ function Animation(pInst) {
       {
         if (this.spriteSheet) {
           var frame_info = this.images[frame].frame;
-          pInst.image(this.spriteSheet.image, frame_info.x, frame_info.y, frame_info.width,
-            frame_info.height, this.offX, this.offY, frame_info.width, frame_info.height);
+          // Modified with suggestion from https://github.com/molleindustria/p5.play/issues/136#issuecomment-434395266
+          pInst.image(this.spriteSheet.image, this.offX, this.offY, frame_info.width, frame_info.height, frame_info.x, frame_info.y, frame_info.width, frame_info.height);
         } else {
           pInst.image(this.images[frame], this.offX, this.offY);
         }

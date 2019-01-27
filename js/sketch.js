@@ -99,6 +99,11 @@ const FLASHLIGHT_RADIUS = 400;
 
 let flashlightDestination;
 
+const MENU_SCENE = 0;
+const GAME_SCENE = 1;
+const FAIL_SCENE = 2;
+const VICTORY_SCENE = 3;
+let currentScene = 1;
 let currentLevel = 4;
 let currentFullness = 3;
 let isFailState = false;
@@ -154,12 +159,17 @@ function preload() {
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
 
 	playerDeadAnimation = loadImage('../img/bottle_dead.png');
-	playerDeadAnimation = loadImage('../img/bottle_dead.png');
 	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
     //playerDeadAnimation = loadAnimation(playerDeadSheet);
 
-	playerJumpSheet = loadSpriteSheet('../img/bottle_jump.png', 73, 150, 4);
-    playerJump = loadAnimation(playerJumpSheet);
+	playerJumpSheet3 = loadSpriteSheet('../img/bottle_jump1.png', 73, 150, 4);
+    playerJump3 = loadAnimation(playerJumpSheet3);
+    playerJumpSheet2 = loadSpriteSheet('../img/bottle_jump2.png', 84, 150, 4);
+    playerJump2 = loadAnimation(playerJumpSheet2);
+    playerJumpSheet1 = loadSpriteSheet('../img/bottle_jump3.png', 84, 150, 4);
+    playerJump1 = loadAnimation(playerJumpSheet1);
+	playerJumpSheet0 = loadSpriteSheet('../img/bottle_jump4.png', 60, 150, 1);
+    playerJump0 = loadAnimation(playerJumpSheet0);
 
 	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/4, 223/2, 2);
     fireMove = loadAnimation(fireImages);
@@ -286,13 +296,16 @@ function setup() {
     player = createSprite(33, 780);
     player.addAnimation('moving3', playerMovementAnimationWine);
     player.addAnimation('standing3', playerStandingAnimationWine);
+    player.addAnimation('jump3', playerJump3);
 	player.addAnimation('moving2', playerMovementAnimationWine2);
     player.addAnimation('standing2', playerStandingAnimationWine2);
+    player.addAnimation('jump2', playerJump2);
 	player.addAnimation('moving1', playerMovementAnimationWine3);
     player.addAnimation('standing1', playerStandingAnimationWine3);
+    player.addAnimation('jump1', playerJump1);
+	 player.addAnimation('jump0', playerJump0);
 	player.addAnimation('moving0', playerMovementAnimationWine4);
     player.addAnimation('standing0', playerStandingAnimationWine4);
-	player.addAnimation('jump', playerJump);
 	player.addAnimation('broken', playerDeadAnimation);
     player.setDefaultCollider();
 	player.depth = 200;
@@ -324,22 +337,55 @@ function setup() {
 }
 
 function draw() {
+    switch (currentScene) {
+        case MENU_SCENE:
+            renderMenu();
+            break;
+        case GAME_SCENE:
+            renderGame();
+            break;
+        case FAIL_SCENE:
+			if (pauseTime>1){
+				pauseTime--;
+			}
+			else{
+				showFailure();
+			}
+            break;
+        case VICTORY_SCENE:
+            showVictory();
+            break;
+    }
+}
 
-    
+function renderGame() {
 
-	
-	
-	
+	if (detected) {
+		time=1;
+		currentFullness--;
+        flashlight.visible = false;
+        flashlightMovement(true);
+		detected=false;
+		currentLevel--;
+		if (currentLevel === 0 || currentFullness === 0){
+            isFailState = true;
+			currentScene = FAIL_SCENE;
+			pauseTime=60;
+		}
+		else{
+			pauseTime=60;
+		}
+		flashlight.visible = true;
+    }
+
 	applyMovement();
-	
+
 	fireDetection();
-	
+
 	hide();
-	
+
 	if (pauseTime>1){
-		pauseTime--;
-		//flashlight.visible = false;
-		
+		pauseTime--;	
 		
 		if (detected){
 			if (pauseTime == 2){
@@ -349,32 +395,37 @@ function draw() {
 				currentFullness--;
 				currentLevel--;
 				if (currentLevel === 0 || currentFullness === 0){
-				isFailState = true;
+					isFailState = true;
+					currentScene=FAIL_SCENE;
 				}
 				white.visible = false;
 			}
-			if (pauseTime<61 && pauseTime>49){
+			if (pauseTime>0){
 				white.visible = true;
 			}
+			
 		}
 		drawSprites();
+		flashlight.visible = false;
+		drawSprites();
+
 	}else{
 		
 		flashlightMovement();
 		
-		if (isFailState) {
+		
+		/*if (isFailState) {
 			showFailure();
 			return;
 		} else if (isVictoryState) {
 			showVictory();
 			return;
-		}
+		}*/
 		
 		if (detected) {
 		time=1;
         flashlight.visible = false;
 		if (currentLevel === 0 || currentFullness === 0){
-            //isFailState = true;
 			pauseTime=60;
 		}
 		else{
@@ -395,8 +446,7 @@ function draw() {
 		time++;
 
 		detection();
-	
-		
+		flashlightMovement();
 	}
 		for (const sprite of allSprites) {
 			if (sprite === flashlight) {
@@ -407,28 +457,29 @@ function draw() {
 				blendMode(BLEND);
 			}
 			if (!sprite.hasOwnProperty('levels') || sprite.levels.includes(currentLevel)) {
-				sprite.display();
+                sprite.display();
+                if (sprite === clock) {
+                    fill(0, 255, 0);
+                    textFont(clockFont, 50);
+                    textAlign(LEFT, BOTTOM)
+                    text('00:' + (Math.floor(time / 60)).toString().padStart(2, '0'), 435, 170);
+                }
 				if (sprite.colliderOptions) {
 					sprite.collider = sprite.colliderOptions;
 				}
 			} else {
-            sprite.setCollider('circle', 0, 0, 0);
+                sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
 		
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
 
-		fill(0, 255,0);
-		textFont(clockFont, 50);
-		textAlign(LEFT, BOTTOM)
-		text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 170);
-
 		if (currentLevel === 6) {
 			isVictoryState = true;
 			pauseTime = 30;
 		}
-	
+
 }
 
 function fireDetection(){
@@ -439,6 +490,7 @@ function fireDetection(){
 		player.changeAnimation('broken');
 		player.setDefaultCollider();
         isFailState = true;
+		currentScene = FAIL_SCENE;
 		pauseTime = 60;
 		overlapFire--;
 	}
@@ -512,16 +564,14 @@ function applyMovement() {
 
     // Apply animations depending on velocity values.
     if (player.velocity.y < 0) {
-        player.changeAnimation('jump');
-        playerJump.nextFrame();
-    }else if(overlapFire>1 && isFailState){
-	}
-	else if (player.velocity.x === 0) {
+        player.changeAnimation('jump' + currentFullness.toString());
+        window['playerJump' + currentFullness.toString()].nextFrame();
+    } else if (player.velocity.x === 0) {
         player.changeAnimation('standing' + currentFullness.toString());
     } else if (player.velocity.x !== 0) {
         player.changeAnimation('moving' + currentFullness.toString());
     }
-	
+
 
 }
 

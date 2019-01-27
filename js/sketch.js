@@ -84,6 +84,9 @@ var pauseTime=1;
 let fire;
 let fireImages;
 
+let white; 
+let whiteImage;
+
 const counterHeight = 40;
 
 const GRAVITY = 1;
@@ -128,6 +131,7 @@ function preload() {
 	ladle3Image = loadImage('../img/hanging_ladle03.png');
 	clockImage = loadImage('../img/alarmclock.png');
 	clockFont = loadFont ('../fonts/alarm_clock.ttf');
+	whiteImage = loadImage('../img/white.png');
 
     playerMovementSpritesWine = loadSpriteSheet('../img/bottle_walk_wine.png', 82, 160, 8);
     playerMovementAnimationWine = loadAnimation(playerMovementSpritesWine);
@@ -263,10 +267,16 @@ function setup() {
     stovePanDirty.addImage(stovePanDirtyImage);
 	stovePanDirty.colliderOptions = stovePanDirty.setCollider('rectangle', 20, 0, stovePanDirtyImage.width-100, stovePanDirtyImage.height-45);
     stovePanDirty.levels = [1, 2, 3];
+	
+	white = createSprite(width/2,height/2,width, height);
+	white.addImage(whiteImage);
+	white.visible = false;
+	white.depth = 3000;
 
     table= createSprite(width/2, height, tableImage.width, tableImage.height);
     tableImage.resize(width, 0);
     table.addImage(tableImage);
+	table.depth = 10;
 
 	tableFG= createSprite(width/2, height, tableFGImage.width, tableFGImage.height);
     tableFGImage.resize(width, 0);
@@ -317,23 +327,8 @@ function draw() {
 
     
 
-	if (detected) {
-		time=1;
-		currentFullness--;
-        flashlight.visible = false;
-        flashlightMovement(true);
-		detected=false;
-		currentLevel--;
-		if (currentLevel === 0 || currentFullness === 0){
-            isFailState = true;
-			pauseTime=60;
-		}
-		else{
-			pauseTime=30;
-		}
-		flashlight.visible = true;
-		
-    }
+	
+	
 	
 	applyMovement();
 	
@@ -343,11 +338,52 @@ function draw() {
 	
 	if (pauseTime>1){
 		pauseTime--;
-		flashlight.visible = false;
-		drawSprites();
+		//flashlight.visible = false;
 		
+		
+		if (detected){
+			if (pauseTime == 2){
+			
+				flashlightMovement(true);
+				detected=false;
+				currentFullness--;
+				currentLevel--;
+				if (currentLevel === 0 || currentFullness === 0){
+				isFailState = true;
+				}
+				white.visible = false;
+			}
+			if (pauseTime<61 && pauseTime>49){
+				white.visible = true;
+			}
+		}
+		drawSprites();
 	}else{
-
+		
+		flashlightMovement();
+		
+		if (isFailState) {
+			showFailure();
+			return;
+		} else if (isVictoryState) {
+			showVictory();
+			return;
+		}
+		
+		if (detected) {
+		time=1;
+        flashlight.visible = false;
+		if (currentLevel === 0 || currentFullness === 0){
+            //isFailState = true;
+			pauseTime=60;
+		}
+		else{
+			pauseTime=60;
+		}
+		flashlight.visible = true;
+		
+		}
+		
 		flashlight.visible = true;
 
 		if (time % 3540 == 0){
@@ -355,25 +391,18 @@ function draw() {
 			currentLevel++;
 			time++;
 		}
-        if (isFailState) {
-			showFailure();
-			return;
-		} else if (isVictoryState) {
-			showVictory();
-			return;
-		}
+        
 		time++;
 
 		detection();
 	
-		flashlightMovement();
-		
 		
 	}
-
 		for (const sprite of allSprites) {
 			if (sprite === flashlight) {
-				blendMode(SCREEN);
+				blendMode(detected ? DODGE  : SCREEN);
+			} else if(sprite == white){
+				blendMode(OVERLAY);
 			} else {
 				blendMode(BLEND);
 			}
@@ -386,6 +415,7 @@ function draw() {
             sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
+		
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
 
@@ -396,7 +426,7 @@ function draw() {
 
 		if (currentLevel === 6) {
 			isVictoryState = true;
-			pauseTime = 60;
+			pauseTime = 30;
 		}
 	
 }
@@ -416,13 +446,17 @@ function fireDetection(){
 
 function detection() {
 
-    if (player.position.dist(flashlight.position) < flashlight.collider.radius && player.depth > 100) {
+    if (isDetected()) {
 		detected = true;
         player.shapeColor = color(255, 0, 0);
     } else {
 		detected = false;
         player.shapeColor = color(0, 255, 0);
     }
+}
+
+function isDetected() {
+	return player.position.dist(flashlight.position) < flashlight.collider.radius && player.depth > 100;
 }
 
 function hide(){

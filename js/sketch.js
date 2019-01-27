@@ -305,12 +305,6 @@ function setup() {
 	kitchenObjects.add(shelf2);
 	kitchenObjects.add(stovePan);
 	kitchenObjects.add(rack);
-<<<<<<< HEAD
-=======
-	// kitchenObjects.add(ladle1);
-	// kitchenObjects.add(ladle2);
-	// kitchenObjects.add(ladle3);
->>>>>>> b23c5bf2981aa388c2b3ac54dc67fc637c2c09f5
 
     kitchenClutter = new Group();
 	kitchenClutter.add(dishes);

@@ -293,7 +293,7 @@ function setup() {
     flashlight.setCollider('circle', 0, 0, FLASHLIGHT_RADIUS / 4);
     flashlight.friction = 0.09;
     flashlight.maxSpeed = MAX_SPEED * 1.5;
-	flashlight.depth = 500;
+    flashlight.depth = 500;
 
     kitchenObjects = new Group();
     kitchenObjects.add(counterTop);
@@ -320,10 +320,8 @@ function draw() {
 	if (detected) {
 		time=1;
 		currentFullness--;
-		flashlight.position.x = random(0, width);
-		flashlight.position.y = 0;
-		flashlightDestination = null;
-		flashlight.visible = false;
+        flashlight.visible = false;
+        flashlightMovement(true);
 		detected=false;
 		currentLevel--;
 		if (currentLevel === 0 || currentFullness === 0){
@@ -418,7 +416,7 @@ function fireDetection(){
 
 function detection() {
 
-    if (player.overlap(flashlight) && player.depth > 100) {
+    if (player.position.dist(flashlight.position) < flashlight.collider.radius && player.depth > 100) {
 		detected = true;
         player.shapeColor = color(255, 0, 0);
     } else {
@@ -493,11 +491,25 @@ function applyMovement() {
 
 }
 
-function flashlightMovement() {
-    if (!flashlightDestination) {
+// Aim the flashlight towards a random point in the level. Once the point has been reached, generate a new random
+// flashlightDestination. If player has been spotted, find a random point that is not too close to the players current
+// position to keep it fair.
+function flashlightMovement(playerHasBeenDetected = false) {
+    if (!flashlightDestination || playerHasBeenDetected) {
         flashlightDestination = p5.Vector.random2D();
         flashlightDestination.x = map(flashlightDestination.x, -1, 1, 0, width);
         flashlightDestination.y = map(flashlightDestination.y, -1, 1, 0, height);
+
+        if (playerHasBeenDetected) {
+            flashlight.position = p5.Vector.random2D();
+            flashlight.position.x = map(flashlight.position.x, -1, 1, 0, width);
+            flashlight.position.y = map(flashlight.position.y, -1, 1, 0, height);
+
+            if (flashlight.position.dist(player.position) < FLASHLIGHT_RADIUS * 2) {
+                flashlightMovement(true);
+                return;
+            }
+        }
     }
 
     flashlight.velocity.x = (flashlightDestination.x - flashlight.position.x) * 0.2;

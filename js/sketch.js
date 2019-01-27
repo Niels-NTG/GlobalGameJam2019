@@ -294,10 +294,6 @@ function setup() {
     flashlight.maxSpeed = MAX_SPEED * 1.5;
 	flashlight.depth = 500;
 
-    for (const sprite of allSprites) {
-        sprite.debug = true;
-    }
-
     kitchenObjects = new Group();
     kitchenObjects.add(counterTop);
     kitchenObjects.add(microwave);

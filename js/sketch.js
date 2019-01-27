@@ -385,11 +385,10 @@ function renderGame() {
 	hide();
 
 	if (pauseTime>1){
-		pauseTime--;	
+			
 		
 		if (detected){
 			if (pauseTime == 2){
-			
 				flashlightMovement(true);
 				detected=false;
 				currentFullness--;
@@ -400,11 +399,9 @@ function renderGame() {
 				}
 				white.visible = false;
 			}
-			if (pauseTime>0){
-				white.visible = true;
-			}
-			
+			white.visible = true;
 		}
+		pauseTime--;
 		drawSprites();
 		flashlight.visible = false;
 		drawSprites();
@@ -423,31 +420,31 @@ function renderGame() {
 		}*/
 		
 		if (detected) {
-		time=1;
-        flashlight.visible = false;
-		if (currentLevel === 0 || currentFullness === 0){
-			pauseTime=60;
-		}
-		else{
-			pauseTime=60;
-		}
-		flashlight.visible = true;
-		
-		}
-		
-		flashlight.visible = true;
-
-		if (time % 3540 == 0){
 			time=1;
-			currentLevel++;
-			time++;
-		}
-        
-		time++;
+			flashlight.visible = false;
+			if (currentLevel === 0 || currentFullness === 0){
+				pauseTime=60;
+			}
+			else{
+				pauseTime=60;
+			}
+			flashlight.visible = true;
+			
+			}
+		
+			flashlight.visible = true;
 
-		detection();
-		flashlightMovement();
-	}
+			if (time % 3540 == 0){
+				time=1;
+				currentLevel++;
+				time++;
+			}
+        
+			time++;
+
+			detection();
+			flashlightMovement();
+		}
 		for (const sprite of allSprites) {
 			if (sprite === flashlight) {
 				blendMode(detected ? DODGE  : SCREEN);
@@ -477,6 +474,7 @@ function renderGame() {
 
 		if (currentLevel === 6) {
 			isVictoryState = true;
+			currentScene = VICTORY_SCENE;
 			pauseTime = 30;
 		}
 

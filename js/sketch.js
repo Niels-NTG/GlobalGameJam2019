@@ -132,6 +132,15 @@ function preload() {
         loadSound('../audio/spotted/found02.mp3'),
         loadSound('../audio/spotted/found03.mp3')
     ];
+    anagonistSounds = [
+        loadSound('../audio/antagonist/Antagonist01.mp3'),
+        loadSound('../audio/antagonist/Antagonist02.mp3'),
+        loadSound('../audio/antagonist/Antagonist03.mp3'),
+        loadSound('../audio/antagonist/Antagonist04.mp3'),
+        loadSound('../audio/antagonist/Antagonist05.mp3'),
+        loadSound('../audio/antagonist/Antagonist06.mp3'),
+        loadSound('../audio/antagonist/Antagonist07.mp3')
+    ];
 
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
@@ -411,7 +420,10 @@ function renderIntroVideo(onFinishPlaying) {
 
 function renderGame() {
 
-	clear();
+    if (frameCount % 1000 === 0) {
+        const anagonistSound = random(anagonistSounds);
+        anagonistSound.play();
+    }
 
 	if (detected) {
 		time=1;
@@ -434,7 +446,7 @@ function renderGame() {
 	hide();
 
 	if (pauseTime>1){
-		if (detected){
+		if (detected) {
 			white.visible = true;
 			if (pauseTime <= 2){
 				flashlight.visible = true;
@@ -448,7 +460,7 @@ function renderGame() {
 				}
 				white.visible = false;
 			}
-			
+
 		}
 		pauseTime--;
 		drawSprites();
@@ -588,6 +600,7 @@ function applyMovement() {
         player.velocity.y = -JUMP;
         isPlayerGrounded = false;
         const jumpSound = random(jumpSounds);
+        jumpSound.setVolume(0.5);
         jumpSound.play();
     }
 
@@ -614,6 +627,7 @@ function applyMovement() {
         player.changeAnimation('moving' + currentFullness.toString());
         if (frameCount % 9 === 0) {
             const stepSound = random(stepSounds);
+            stepSound.setVolume(0.3);
             stepSound.play();
         }
     }

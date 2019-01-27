@@ -127,6 +127,11 @@ function preload() {
         loadSound('../audio/steps/footstep_bottle03.mp3'),
         loadSound('../audio/steps/footstep_bottle04.mp3')
     ];
+    faillureSounds = [
+        loadSound('../audio/spotted/found01.mp3'),
+        loadSound('../audio/spotted/found02.mp3'),
+        loadSound('../audio/spotted/found03.mp3')
+    ];
 
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
@@ -661,6 +666,9 @@ function showVictory() {
 function showFailure() {
 
     background(0);
+
+    const faillureSound = random(faillureSounds);
+    faillureSound.play();
 
     noStroke();
     fill(255);

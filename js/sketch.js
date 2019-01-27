@@ -79,6 +79,7 @@ let ladle3Image;
 var detected;
 var overlapFire = 0;
 var time = 1;
+var pauseTime=1;
 
 let fire;
 let fireImages;
@@ -314,13 +315,7 @@ function setup() {
 
 function draw() {
 
-    if (isFailState) {
-        showFailure();
-        return;
-    } else if (isVictoryState) {
-        showVictory();
-        return;
-    }
+    
 
 	if (detected) {
 		time=1;
@@ -333,66 +328,91 @@ function draw() {
 		currentLevel--;
 		if (currentLevel === 0 || currentFullness === 0){
             isFailState = true;
+			pauseTime=60;
+		}
+		else{
+			pauseTime=30;
 		}
 		flashlight.visible = true;
+		
     }
-
+	
 	applyMovement();
-
+	
 	fireDetection();
+	
+	hide();
+	
+	if (pauseTime>1){
+		pauseTime--;
+		flashlight.visible = false;
+		drawSprites();
+		
+	}else{
 
+		flashlight.visible = true;
 
 		if (time % 3540 == 0){
 			time=1;
 			currentLevel++;
 			time++;
 		}
+        if (isFailState) {
+			showFailure();
+			return;
+		} else if (isVictoryState) {
+			showVictory();
+			return;
+		}
+		time++;
 
-        hide();
+		detection();
+	
+		flashlightMovement();
+		
+		
+	}
 
-
-    time++;
-
-    detection();
-
-    flashlightMovement();
-
-    for (const sprite of allSprites) {
-        if (sprite === flashlight) {
-            blendMode(SCREEN);
-        } else {
-            blendMode(BLEND);
-        }
-        if (!sprite.hasOwnProperty('levels') || sprite.levels.includes(currentLevel)) {
-            sprite.display();
-            if (sprite.colliderOptions) {
-                sprite.collider = sprite.colliderOptions;
-            }
-        } else {
+		for (const sprite of allSprites) {
+			if (sprite === flashlight) {
+				blendMode(SCREEN);
+			} else {
+				blendMode(BLEND);
+			}
+			if (!sprite.hasOwnProperty('levels') || sprite.levels.includes(currentLevel)) {
+				sprite.display();
+				if (sprite.colliderOptions) {
+					sprite.collider = sprite.colliderOptions;
+				}
+			} else {
             sprite.setCollider('circle', 0, 0, 0);
-        }
-    }
-	blendMode(BLEND);
-    image(vignetteImage, 0, 0, width, height);
+			}
+		}
+		blendMode(BLEND);
+		image(vignetteImage, 0, 0, width, height);
 
-	fill(0, 255,0);
-    textFont(clockFont, 50);
-    textAlign(LEFT, BOTTOM)
-	text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 170);
+		fill(0, 255,0);
+		textFont(clockFont, 50);
+		textAlign(LEFT, BOTTOM)
+		text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 170);
 
-    if (currentLevel === 6) {
-        isVictoryState = true;
-    }
+		if (currentLevel === 6) {
+			isVictoryState = true;
+			pauseTime = 60;
+		}
+	
 }
 
 function fireDetection(){
-	if(player.overlap(fire)){
+	if(player.overlap(fire) && !isFailState){
 		overlapFire++;
 	}
-	if (overlapFire >= 60) {
+	if (overlapFire > 60) {
 		player.changeAnimation('broken');
 		player.setDefaultCollider();
         isFailState = true;
+		pauseTime = 60;
+		overlapFire--;
 	}
 }
 
@@ -462,11 +482,14 @@ function applyMovement() {
     if (player.velocity.y < 0) {
         player.changeAnimation('jump');
         playerJump.nextFrame();
-    } else if (player.velocity.x === 0) {
+    }else if(overlapFire>1 && isFailState){
+	}
+	else if (player.velocity.x === 0) {
         player.changeAnimation('standing' + currentFullness.toString());
     } else if (player.velocity.x !== 0) {
         player.changeAnimation('moving' + currentFullness.toString());
     }
+	
 
 }
 

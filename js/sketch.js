@@ -150,7 +150,6 @@ function preload() {
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
 
 	playerDeadAnimation = loadImage('../img/bottle_dead.png');
-	playerDeadAnimation = loadImage('../img/bottle_dead.png');
 	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
     //playerDeadAnimation = loadAnimation(playerDeadSheet);
 
@@ -384,21 +383,22 @@ function draw() {
 				blendMode(BLEND);
 			}
 			if (!sprite.hasOwnProperty('levels') || sprite.levels.includes(currentLevel)) {
-				sprite.display();
+                sprite.display();
+                if (sprite === clock) {
+                    fill(0, 255, 0);
+                    textFont(clockFont, 50);
+                    textAlign(LEFT, BOTTOM)
+                    text('00:' + (Math.floor(time / 60)).toString().padStart(2, '0'), 435, 170);
+                }
 				if (sprite.colliderOptions) {
 					sprite.collider = sprite.colliderOptions;
 				}
 			} else {
-            sprite.setCollider('circle', 0, 0, 0);
+                sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
-
-		fill(0, 255,0);
-		textFont(clockFont, 50);
-		textAlign(LEFT, BOTTOM)
-		text('00:'+(Math.floor(time/60)).toString().padStart(2,'0'),435, 170);
 
 		if (currentLevel === 6) {
 			isVictoryState = true;

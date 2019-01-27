@@ -441,14 +441,6 @@ function renderGame() {
 				time++;
 			}
 		time++;
-		time=1;
-		if (currentLevel === 0 || currentFullness === 0){
-			pauseTime=60;
-		}
-		else{
-			pauseTime=60;
-		}
-
 		flashlight.visible = true;
 
 		if (time % 3540 == 0){
@@ -495,7 +487,7 @@ function renderGame() {
 			currentScene = VICTORY_SCENE;
 			pauseTime = 30;
 		}
-
+}
 
 
 function fireDetection(){
@@ -587,8 +579,6 @@ function applyMovement() {
     } else if (player.velocity.x !== 0) {
         player.changeAnimation('moving' + currentFullness.toString());
     }
-
-
 }
 
 // Aim the flashlight towards a random point in the level. Once the point has been reached, generate a new random
@@ -666,5 +656,4 @@ function keyReleased() {
 // Restart game.
 function restart() {
 location.reload();
-}
 }

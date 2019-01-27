@@ -96,6 +96,11 @@ const FLASHLIGHT_RADIUS = 400;
 
 let flashlightDestination;
 
+const MENU_SCENE = 0;
+const GAME_SCENE = 1;
+const FAIL_SCENE = 2;
+const VICTORY_SCENE = 3;
+let currentScene = 1;
 let currentLevel = 4;
 let currentFullness = 3;
 let isFailState = false;
@@ -319,6 +324,23 @@ function setup() {
 }
 
 function draw() {
+    switch (currentScene) {
+        case MENU_SCENE:
+            renderMenu();
+            break;
+        case GAME_SCENE:
+            renderGame();
+            break;
+        case FAIL_SCENE:
+            showFailure();
+            break;
+        case VICTORY_SCENE:
+            showVictory();
+            break;
+    }
+}
+
+function renderGame() {
 
 
 

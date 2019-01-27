@@ -417,7 +417,8 @@ function renderGame() {
 
 	if (pauseTime>1){
 		if (detected){
-			if (pauseTime == 2){
+			white.visible = true;
+			if (pauseTime <= 2){
 				flashlight.visible = true;
 				flashlightMovement(true);
 				detected=false;
@@ -429,10 +430,7 @@ function renderGame() {
 				}
 				white.visible = false;
 			}
-			//white.visible = true;
-			if (pauseTime>0){
-				white.visible = true;
-			}
+			
 		}
 		pauseTime--;
 		drawSprites();

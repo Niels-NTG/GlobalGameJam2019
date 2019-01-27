@@ -154,8 +154,12 @@ function preload() {
 	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
     //playerDeadAnimation = loadAnimation(playerDeadSheet);
 
-	playerJumpSheet = loadSpriteSheet('../img/bottle_jump.png', 73, 150, 4);
-    playerJump = loadAnimation(playerJumpSheet);
+	playerJumpSheet3 = loadSpriteSheet('../img/bottle_jump1.png', 73, 150, 4);
+    playerJump3 = loadAnimation(playerJumpSheet3);
+    playerJumpSheet2 = loadSpriteSheet('../img/bottle_jump2.png', 84, 150, 4);
+    playerJump2 = loadAnimation(playerJumpSheet2);
+    playerJumpSheet1 = loadSpriteSheet('../img/bottle_jump3.png', 84, 150, 4);
+    playerJump1 = loadAnimation(playerJumpSheet1);
 
 	fireImages = loadSpriteSheet('../img/sprite_stovefire_v1.png', 306/4, 223/2, 2);
     fireMove = loadAnimation(fireImages);
@@ -276,13 +280,15 @@ function setup() {
     player = createSprite(33, 780);
     player.addAnimation('moving3', playerMovementAnimationWine);
     player.addAnimation('standing3', playerStandingAnimationWine);
+    player.addAnimation('jump3', playerJump3);
 	player.addAnimation('moving2', playerMovementAnimationWine2);
     player.addAnimation('standing2', playerStandingAnimationWine2);
+    player.addAnimation('jump2', playerJump2);
 	player.addAnimation('moving1', playerMovementAnimationWine3);
     player.addAnimation('standing1', playerStandingAnimationWine3);
+    player.addAnimation('jump1', playerJump1);
 	player.addAnimation('moving0', playerMovementAnimationWine4);
     player.addAnimation('standing0', playerStandingAnimationWine4);
-	player.addAnimation('jump', playerJump);
 	player.addAnimation('broken', playerDeadAnimation);
     player.setDefaultCollider();
 	player.depth = 200;
@@ -315,7 +321,7 @@ function setup() {
 
 function draw() {
 
-    
+
 
 	if (detected) {
 		time=1;
@@ -332,20 +338,20 @@ function draw() {
 			pauseTime=30;
 		}
 		flashlight.visible = true;
-		
+
     }
-	
+
 	applyMovement();
-	
+
 	fireDetection();
-	
+
 	hide();
-	
+
 	if (pauseTime>1){
 		pauseTime--;
 		flashlight.visible = false;
 		drawSprites();
-		
+
 	}else{
 
 		flashlight.visible = true;
@@ -365,10 +371,10 @@ function draw() {
 		time++;
 
 		detection();
-	
+
 		flashlightMovement();
-		
-		
+
+
 	}
 
 		for (const sprite of allSprites) {
@@ -398,7 +404,7 @@ function draw() {
 			isVictoryState = true;
 			pauseTime = 60;
 		}
-	
+
 }
 
 function fireDetection(){
@@ -478,16 +484,14 @@ function applyMovement() {
 
     // Apply animations depending on velocity values.
     if (player.velocity.y < 0) {
-        player.changeAnimation('jump');
-        playerJump.nextFrame();
-    }else if(overlapFire>1 && isFailState){
-	}
-	else if (player.velocity.x === 0) {
+        player.changeAnimation('jump' + currentFullness.toString());
+        window['playerJump' + currentFullness.toString()].nextFrame();
+    } else if (player.velocity.x === 0) {
         player.changeAnimation('standing' + currentFullness.toString());
     } else if (player.velocity.x !== 0) {
         player.changeAnimation('moving' + currentFullness.toString());
     }
-	
+
 
 }
 

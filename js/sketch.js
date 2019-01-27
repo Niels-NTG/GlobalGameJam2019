@@ -402,18 +402,11 @@ function renderGame() {
 	hide();
 
 	if (pauseTime>1){
-<<<<<<< HEAD
-			
-		
 		if (detected){
 			if (pauseTime == 2){
-=======
-		pauseTime--;
-
 		if (detected){
 			if (pauseTime == 2){
 
->>>>>>> e76a9421dd765d2144249c02f6596e4867066b41
 				flashlightMovement(true);
 				detected=false;
 				currentFullness--;
@@ -424,14 +417,10 @@ function renderGame() {
 				}
 				white.visible = false;
 			}
-<<<<<<< HEAD
 			white.visible = true;
-=======
 			if (pauseTime>0){
 				white.visible = true;
 			}
-
->>>>>>> e76a9421dd765d2144249c02f6596e4867066b41
 		}
 		pauseTime--;
 		drawSprites();
@@ -441,18 +430,7 @@ function renderGame() {
 	}else{
 
 		flashlightMovement();
-
-
-		/*if (isFailState) {
-			showFailure();
-			return;
-		} else if (isVictoryState) {
-			showVictory();
-			return;
-		}*/
-
 		if (detected) {
-<<<<<<< HEAD
 			time=1;
 			flashlight.visible = false;
 			if (currentLevel === 0 || currentFullness === 0){
@@ -474,7 +452,6 @@ function renderGame() {
 			}
         
 			time++;
-=======
 		time=1;
         flashlight.visible = false;
 		if (currentLevel === 0 || currentFullness === 0){
@@ -496,10 +473,8 @@ function renderGame() {
 		}
 
 		time++;
->>>>>>> e76a9421dd765d2144249c02f6596e4867066b41
-
-			detection();
-			flashlightMovement();
+		detection();
+		flashlightMovement();
 		}
 		for (const sprite of allSprites) {
 			if (sprite === flashlight) {
@@ -704,4 +679,5 @@ function keyReleased() {
 // Restart game.
 function restart() {
     location.reload();
+}
 }

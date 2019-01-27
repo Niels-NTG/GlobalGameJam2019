@@ -113,6 +113,9 @@ function preload() {
     mainTextFont = loadFont('../fonts/Spectral-Italic.ttf');
     headingFont = loadFont('../fonts/Spectral-Bold.ttf');
 
+    introVideo = createVideo('../video/introduction_pourme.mp4');
+    introVideo.hide();
+
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
     tilesImage = loadImage('../img/tiles.png');
@@ -367,18 +370,31 @@ function renderMenu() {
     let btn = createButton('Start');
     btn.position(1230, 420);
     btn.mousePressed(() => {
-        currentScene = GAME_SCENE;
-        loop();
-		btn.remove();
+        btn.remove();
+        renderIntroVideo(() => {
+            introVideo.remove();
+            currentScene = GAME_SCENE;
+            loop();
+        })
     })
     noLoop();
 
 }
 
+function renderIntroVideo(onFinishPlaying) {
+    introVideo.mouseClicked(() => {
+        introVideo.stop();
+        onFinishPlaying();
+    })
+    introVideo.onended(onFinishPlaying);
+    introVideo.show()
+    introVideo.play();
+}
+
 function renderGame() {
-	
+
 	clear();
-	
+
 	if (detected) {
 		time=1;
 		currentFullness--;
@@ -433,7 +449,7 @@ function renderGame() {
 			}
 			else{
 				pauseTime=60;
-			}			
+			}
 			}
 			if (time % 3540 == 0){
 				time=1;
@@ -453,7 +469,7 @@ function renderGame() {
 		detection();
 		flashlightMovement();
 	}
-	
+
 	for (const sprite of allSprites) {
 			if (sprite === flashlight) {
 				blendMode(detected ? DODGE  : SCREEN);
@@ -477,7 +493,7 @@ function renderGame() {
                 sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
-	
+
 
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
@@ -655,5 +671,5 @@ function keyReleased() {
 
 // Restart game.
 function restart() {
-location.reload();
+    location.reload();
 }

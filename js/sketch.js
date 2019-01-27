@@ -116,6 +116,18 @@ function preload() {
     introVideo = createVideo('../video/introduction_pourme.mp4');
     introVideo.hide();
 
+    menuClick = loadSound('../audio/menu-click.wav');
+    jumpSounds = [
+        loadSound('../audio/jumps/jump01.mp3'),
+        loadSound('../audio/jumps/jump02.mp3')
+    ];
+    stepSounds = [
+        loadSound('../audio/steps/footstep_bottle01.mp3'),
+        loadSound('../audio/steps/footstep_bottle02.mp3'),
+        loadSound('../audio/steps/footstep_bottle03.mp3'),
+        loadSound('../audio/steps/footstep_bottle04.mp3')
+    ];
+
     flashlightImage = loadImage('../img/flashlight.png');
     dishesImage = loadImage('../img/dishes.png');
     tilesImage = loadImage('../img/tiles.png');
@@ -370,6 +382,7 @@ function renderMenu() {
     let btn = createButton('Start');
     btn.position(1230, 420);
     btn.mousePressed(() => {
+        menuClick.play();
         btn.remove();
         renderIntroVideo(() => {
             introVideo.remove();
@@ -571,6 +584,8 @@ function applyMovement() {
     if (keyWentDown('space') && isPlayerGrounded) {
         player.velocity.y = -JUMP;
         isPlayerGrounded = false;
+        const jumpSound = random(jumpSounds);
+        jumpSound.play();
     }
 
     // Apply velocity.
@@ -594,6 +609,10 @@ function applyMovement() {
         player.changeAnimation('standing' + currentFullness.toString());
     } else if (player.velocity.x !== 0) {
         player.changeAnimation('moving' + currentFullness.toString());
+        if (frameCount % 9 === 0) {
+            const stepSound = random(stepSounds);
+            stepSound.play();
+        }
     }
 }
 
@@ -671,5 +690,6 @@ function keyReleased() {
 
 // Restart game.
 function restart() {
+    menuClick.play();
     location.reload();
 }

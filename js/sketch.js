@@ -368,31 +368,29 @@ function renderMenu() {
     btn.position(1230, 420);
     btn.mousePressed(() => {
         currentScene = GAME_SCENE;
-        btn.remove();
         loop();
+		btn.remove();
     })
     noLoop();
 
 }
 
 function renderGame() {
-
+	
+	clear();
+	
 	if (detected) {
 		time=1;
 		currentFullness--;
-        flashlight.visible = false;
+        //flashlight.visible = false;
         flashlightMovement(true);
 		detected=false;
 		currentLevel--;
 		if (currentLevel === 0 || currentFullness === 0){
             isFailState = true;
 			currentScene = FAIL_SCENE;
-			pauseTime=60;
 		}
-		else{
-			pauseTime=60;
-		}
-		flashlight.visible = true;
+	    pauseTime=60;
     }
 
 	applyMovement();
@@ -404,9 +402,7 @@ function renderGame() {
 	if (pauseTime>1){
 		if (detected){
 			if (pauseTime == 2){
-		if (detected){
-			if (pauseTime == 2){
-
+				flashlight.visible = true;
 				flashlightMovement(true);
 				detected=false;
 				currentFullness--;
@@ -417,7 +413,7 @@ function renderGame() {
 				}
 				white.visible = false;
 			}
-			white.visible = true;
+			//white.visible = true;
 			if (pauseTime>0){
 				white.visible = true;
 			}
@@ -432,36 +428,25 @@ function renderGame() {
 		flashlightMovement();
 		if (detected) {
 			time=1;
-			flashlight.visible = false;
 			if (currentLevel === 0 || currentFullness === 0){
 				pauseTime=60;
 			}
 			else{
 				pauseTime=60;
+			}			
 			}
-			flashlight.visible = true;
-			
-			}
-		
-			flashlight.visible = true;
-
 			if (time % 3540 == 0){
 				time=1;
 				currentLevel++;
 				time++;
 			}
-        
-			time++;
+		time++;
 		time=1;
-        flashlight.visible = false;
 		if (currentLevel === 0 || currentFullness === 0){
 			pauseTime=60;
 		}
 		else{
 			pauseTime=60;
-		}
-		flashlight.visible = true;
-
 		}
 
 		flashlight.visible = true;
@@ -475,8 +460,9 @@ function renderGame() {
 		time++;
 		detection();
 		flashlightMovement();
-		}
-		for (const sprite of allSprites) {
+	}
+	
+	for (const sprite of allSprites) {
 			if (sprite === flashlight) {
 				blendMode(detected ? DODGE  : SCREEN);
 			} else if(sprite == white){
@@ -499,6 +485,7 @@ function renderGame() {
                 sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
+	
 
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
@@ -509,7 +496,7 @@ function renderGame() {
 			pauseTime = 30;
 		}
 
-}
+
 
 function fireDetection(){
 	if(player.overlap(fire) && !isFailState){
@@ -678,6 +665,6 @@ function keyReleased() {
 
 // Restart game.
 function restart() {
-    location.reload();
+location.reload();
 }
 }

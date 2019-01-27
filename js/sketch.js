@@ -84,7 +84,7 @@ var pauseTime=1;
 let fire;
 let fireImages;
 
-let white; 
+let white;
 let whiteImage;
 
 const counterHeight = 40;
@@ -103,7 +103,7 @@ const MENU_SCENE = 0;
 const GAME_SCENE = 1;
 const FAIL_SCENE = 2;
 const VICTORY_SCENE = 3;
-let currentScene = 1;
+let currentScene = 0;
 let currentLevel = 4;
 let currentFullness = 3;
 let isFailState = false;
@@ -159,8 +159,8 @@ function preload() {
     playerStandingAnimationWine4 = loadAnimation(playerStandingSpritesWine4);
 
 	playerDeadAnimation = loadImage('../img/bottle_dead.png');
-	//playerDeadSheet = loadSpriteSheet('../img/bottle_walk_wine4.png', 360, 166, 1);
-    //playerDeadAnimation = loadAnimation(playerDeadSheet);
+    // playerDeadSheet = loadSpriteSheet('../img/bottle_dead_shatter.png', 176, 170, 6);
+    // playerDeadAnimation = loadAnimation(playerDeadSheet);
 
 	playerJumpSheet3 = loadSpriteSheet('../img/bottle_jump1.png', 73, 150, 4);
     playerJump3 = loadAnimation(playerJumpSheet3);
@@ -175,7 +175,9 @@ function preload() {
     fireMove = loadAnimation(fireImages);
 
 	bottleFullness = loadAnimation();
-	bottleFullness.playing = false;
+    bottleFullness.playing = false;
+
+    mainMenuImage = loadImage('../img/mainmenu.png');
 }
 
 function setup() {
@@ -277,7 +279,7 @@ function setup() {
     stovePanDirty.addImage(stovePanDirtyImage);
 	stovePanDirty.colliderOptions = stovePanDirty.setCollider('rectangle', 20, 0, stovePanDirtyImage.width-100, stovePanDirtyImage.height-45);
     stovePanDirty.levels = [1, 2, 3];
-	
+
 	white = createSprite(width/2,height/2,width, height);
 	white.addImage(whiteImage);
 	white.visible = false;
@@ -358,6 +360,21 @@ function draw() {
     }
 }
 
+function renderMenu() {
+
+    image(mainMenuImage, 0, 0);
+
+    let btn = createButton('Start');
+    btn.position(1230, 420);
+    btn.mousePressed(() => {
+        currentScene = GAME_SCENE;
+        btn.remove();
+        loop();
+    })
+    noLoop();
+
+}
+
 function renderGame() {
 
 	if (detected) {
@@ -385,11 +402,11 @@ function renderGame() {
 	hide();
 
 	if (pauseTime>1){
-		pauseTime--;	
-		
+		pauseTime--;
+
 		if (detected){
 			if (pauseTime == 2){
-			
+
 				flashlightMovement(true);
 				detected=false;
 				currentFullness--;
@@ -403,17 +420,17 @@ function renderGame() {
 			if (pauseTime>0){
 				white.visible = true;
 			}
-			
+
 		}
 		drawSprites();
 		flashlight.visible = false;
 		drawSprites();
 
 	}else{
-		
+
 		flashlightMovement();
-		
-		
+
+
 		/*if (isFailState) {
 			showFailure();
 			return;
@@ -421,7 +438,7 @@ function renderGame() {
 			showVictory();
 			return;
 		}*/
-		
+
 		if (detected) {
 		time=1;
         flashlight.visible = false;
@@ -432,9 +449,9 @@ function renderGame() {
 			pauseTime=60;
 		}
 		flashlight.visible = true;
-		
+
 		}
-		
+
 		flashlight.visible = true;
 
 		if (time % 3540 == 0){
@@ -442,7 +459,7 @@ function renderGame() {
 			currentLevel++;
 			time++;
 		}
-        
+
 		time++;
 
 		detection();
@@ -471,7 +488,7 @@ function renderGame() {
                 sprite.setCollider('circle', 0, 0, 0);
 			}
 		}
-		
+
 		blendMode(BLEND);
 		image(vignetteImage, 0, 0, width, height);
 
